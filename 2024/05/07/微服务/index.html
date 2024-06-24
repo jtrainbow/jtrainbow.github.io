@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"jtrainbow.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="微服务架构是把一个单体应用程序拆分成多个小型服务，每个服务运行在各自的进程中，并通过轻量级机制（REST、PRC）进行通信。这些服务按照业务功能构建，相互独立并且有尽可能低的关联性，可以使用不同的编程语言和数据存储技术实现，甚至可以通过全自动部署机制独立部署。  REST：基于TCP的超文本传输协议（HTTP）的一种格式 PRC：基于二进制的远程调用协议 服务关联性：各个服务暴露自身API，其他服">
+<meta property="og:type" content="article">
+<meta property="og:title" content="微服务">
+<meta property="og:url" content="https://jtrainbow.github.io/2024/05/07/%E5%BE%AE%E6%9C%8D%E5%8A%A1/index.html">
+<meta property="og:site_name" content="JTRAINBOWの博客">
+<meta property="og:description" content="微服务架构是把一个单体应用程序拆分成多个小型服务，每个服务运行在各自的进程中，并通过轻量级机制（REST、PRC）进行通信。这些服务按照业务功能构建，相互独立并且有尽可能低的关联性，可以使用不同的编程语言和数据存储技术实现，甚至可以通过全自动部署机制独立部署。  REST：基于TCP的超文本传输协议（HTTP）的一种格式 PRC：基于二进制的远程调用协议 服务关联性：各个服务暴露自身API，其他服">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-05-07T15:10:31.093Z">
+<meta property="article:modified_time" content="2024-05-21T09:06:58.253Z">
+<meta property="article:author" content="JTRAINBOW">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://jtrainbow.github.io/2024/05/07/%E5%BE%AE%E6%9C%8D%E5%8A%A1/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://jtrainbow.github.io/2024/05/07/%E5%BE%AE%E6%9C%8D%E5%8A%A1/","path":"2024/05/07/微服务/","title":"微服务"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>微服务 | JTRAINBOWの博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">JTRAINBOWの博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E5%88%86%E7%B1%BB"><span class="nav-number">1.</span> <span class="nav-text">应用程序分类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%99%AE%E9%80%9A%E5%8D%95%E4%BD%93%E5%BA%94%E7%94%A8%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.1.</span> <span class="nav-text">普通单体应用系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E5%8D%95%E4%BD%93%E5%BA%94%E7%94%A8%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.2.</span> <span class="nav-text">分布式单体应用系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4%E5%8D%95%E4%BD%93%E5%BA%94%E7%94%A8%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.3.</span> <span class="nav-text">集群单体应用系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9E%82%E7%9B%B4%E5%A4%9A%E6%9C%8D%E5%8A%A1%E5%BA%94%E7%94%A8%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.4.</span> <span class="nav-text">垂直多服务应用系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E5%A4%9A%E6%9C%8D%E5%8A%A1%E5%BA%94%E7%94%A8%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.5.</span> <span class="nav-text">分布式多服务应用系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SOA"><span class="nav-number">1.6.</span> <span class="nav-text">SOA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AE%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.7.</span> <span class="nav-text">微服务</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%AE%E6%9C%8D%E5%8A%A1%E7%B3%BB%E7%BB%9F%E9%9C%80%E8%A6%81%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">微服务系统需要解决的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">3.</span> <span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%84%E4%BB%B6%E6%A1%86%E6%9E%B6"><span class="nav-number">4.</span> <span class="nav-text">组件框架</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Eureka"><span class="nav-number">4.1.</span> <span class="nav-text">Eureka</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Config"><span class="nav-number">4.2.</span> <span class="nav-text">Config</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Nacos"><span class="nav-number">4.3.</span> <span class="nav-text">Nacos</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ribbon"><span class="nav-number">4.4.</span> <span class="nav-text">Ribbon</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OpenFeign"><span class="nav-number">4.5.</span> <span class="nav-text">OpenFeign</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Gateway"><span class="nav-number">4.6.</span> <span class="nav-text">Gateway</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sentinel"><span class="nav-number">4.7.</span> <span class="nav-text">Sentinel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hystrix"><span class="nav-number">4.8.</span> <span class="nav-text">Hystrix</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Seata"><span class="nav-number">4.9.</span> <span class="nav-text">Seata</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Zookeeper"><span class="nav-number">4.10.</span> <span class="nav-text">Zookeeper</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">4.10.1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#zk%E7%BB%84%E6%88%90"><span class="nav-number">4.10.2.</span> <span class="nav-text">zk组成</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B"><span class="nav-number">4.10.3.</span> <span class="nav-text">数据模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ZNode%E7%B1%BB%E5%9E%8B"><span class="nav-number">4.10.4.</span> <span class="nav-text">ZNode类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%A8%E5%B1%80Session"><span class="nav-number">4.10.5.</span> <span class="nav-text">全局Session</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%9B%91%E5%90%AC%E6%9C%BA%E5%88%B6"><span class="nav-number">4.10.6.</span> <span class="nav-text">监听机制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4"><span class="nav-number">4.10.7.</span> <span class="nav-text">集群</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9B%86%E6%88%90"><span class="nav-number">4.10.8.</span> <span class="nav-text">集成</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dubbo"><span class="nav-number">4.11.</span> <span class="nav-text">Dubbo</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9A%B4%E9%9C%B2%E5%92%8C%E5%BC%95%E7%94%A8"><span class="nav-number">4.11.1.</span> <span class="nav-text">暴露和引用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83"><span class="nav-number">4.11.2.</span> <span class="nav-text">注册中心</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E6%8F%90%E4%BE%9B%E8%80%85%E5%92%8C%E6%9C%8D%E5%8A%A1%E6%B6%88%E8%B4%B9%E8%80%85"><span class="nav-number">4.11.3.</span> <span class="nav-text">服务提供者和服务消费者</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E3%80%81%E9%9B%86%E7%BE%A4%E5%AE%B9%E9%94%99"><span class="nav-number">4.11.4.</span> <span class="nav-text">负载均衡、集群容错</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%B6%E6%9E%84"><span class="nav-number">4.11.5.</span> <span class="nav-text">架构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E6%9C%BA%E5%88%B6"><span class="nav-number">4.11.6.</span> <span class="nav-text">扩展机制</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">JTRAINBOW</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://jtrainbow.github.io/2024/05/07/%E5%BE%AE%E6%9C%8D%E5%8A%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="JTRAINBOW">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JTRAINBOWの博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="微服务 | JTRAINBOWの博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          微服务
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-05-07 23:10:31" itemprop="dateCreated datePublished" datetime="2024-05-07T23:10:31+08:00">2024-05-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-05-21 17:06:58" itemprop="dateModified" datetime="2024-05-21T17:06:58+08:00">2024-05-21</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>微服务架构是把一个单体应用程序拆分成多个小型服务，每个服务运行在各自的进程中，并通过轻量级机制（REST、PRC）进行通信。这些服务按照业务功能构建，相互独立并且有尽可能低的关联性，可以使用不同的编程语言和数据存储技术实现，甚至可以通过全自动部署机制独立部署。</p>
+<ol>
+<li>REST：基于TCP的超文本传输协议（HTTP）的一种格式</li>
+<li>PRC：基于二进制的远程调用协议</li>
+<li>服务关联性：各个服务暴露自身API，其他服务按需调用</li>
+</ol>
+<h2 id="应用程序分类"><a href="#应用程序分类" class="headerlink" title="应用程序分类"></a>应用程序分类</h2><h3 id="普通单体应用系统"><a href="#普通单体应用系统" class="headerlink" title="普通单体应用系统"></a>普通单体应用系统</h3><ol>
+<li>概念：所有代码都放在一个项目中，应用系统和存储系统都在同一个服务器</li>
+<li>优点：项目前中期方便开发、测试和部署</li>
+<li>缺点：项目后期代码量变得臃肿，导致开发效率低、维护困难，服务器资源压力增大，且任意功能出现重大漏洞和错误都会影响整体</li>
+</ol>
+<h3 id="分布式单体应用系统"><a href="#分布式单体应用系统" class="headerlink" title="分布式单体应用系统"></a>分布式单体应用系统</h3><ol>
+<li>概念：所有代码都放在一个项目中，应用系统和存储系统分布在不同的服务器</li>
+<li>优点：项目前中期方便开发、测试和部署</li>
+<li>缺点：项目后期代码量变得臃肿，导致开发效率低、维护困难，服务器资源压力增大，且任意功能出现重大漏洞和错误都会影响整体</li>
+</ol>
+<h3 id="集群单体应用系统"><a href="#集群单体应用系统" class="headerlink" title="集群单体应用系统"></a>集群单体应用系统</h3><ol>
+<li>概念：所有代码都放在一个项目中，应用系统和存储系统增加多个实例，分布在不同的服务器</li>
+<li>优点：项目前中期方便开发、测试和部署，多个实例部署在不同服务器，通过负载均衡为所有服务器分摊压力</li>
+<li>缺点：项目后期代码量变得臃肿，导致开发效率低、维护困难，任意实例出现重大漏洞和错误都会导致该实例不可用</li>
+</ol>
+<h3 id="垂直多服务应用系统"><a href="#垂直多服务应用系统" class="headerlink" title="垂直多服务应用系统"></a>垂直多服务应用系统</h3><ol>
+<li>概念：将单体应用划分成多个小的服务模块，每个服务和存储系统增加多个实例，分布在不同的服务器</li>
+<li>优点：多个实例部署在不同服务器，通过负载均衡为所有服务器分摊压力，方便对不同服务模块针对性优化和扩展</li>
+<li>缺点：每个服务之间项目独立，无法通信，还可能会有重复的业务</li>
+</ol>
+<h3 id="分布式多服务应用系统"><a href="#分布式多服务应用系统" class="headerlink" title="分布式多服务应用系统"></a>分布式多服务应用系统</h3><ol>
+<li>概念：将垂直应用系统中重复代码提取出来组成多个公共的服务模块，业务模块同一使用公共模块，应用系统和存储系统增加多个实例，分布在不同的服务器</li>
+<li>优点：提高代码服用率</li>
+<li>缺点：各个模块耦合度变高，调用关系复杂难以维护</li>
+</ol>
+<h3 id="SOA"><a href="#SOA" class="headerlink" title="SOA"></a>SOA</h3><ol>
+<li>概念：面向服务架构，通过资源调度和治理中心（Service Oriented Architecture）对所有服务进行实时管理</li>
+<li>优点：使用服务中心解决服务间的自动调节</li>
+<li>缺点：需要维护服务中心（资源调度和治理），服务间有依赖性，某个节点出错会导致整个环节不可用（服务雪崩）</li>
+</ol>
+<h3 id="微服务"><a href="#微服务" class="headerlink" title="微服务"></a>微服务</h3><ol>
+<li>概念：面向服务架构，但更强调业务功能的尽量拆分</li>
+<li>优点：容易扩展、服务间耦合度低</li>
+<li>缺点：开发成本高，需要考虑容错和分布式事务</li>
+</ol>
+<h2 id="微服务系统需要解决的问题"><a href="#微服务系统需要解决的问题" class="headerlink" title="微服务系统需要解决的问题"></a>微服务系统需要解决的问题</h2><ol>
+<li>如何管理多个微服务：服务治理（注册、发现、移除）</li>
+<li>服务之间如何通信：服务调用（REST、RPC）</li>
+<li>客户端如何访问服务：服务网关（客户端-&gt;API网关-&gt;各个服务）</li>
+<li>某个服务出现问题如何处理：服务容错（不被外界环境影响、不被上游服务请求压垮、不被下游服务响应拖垮）</li>
+<li>某个服务出现问题如何排查：链路追踪（对一次请求涉及的所有服务进行日志记录和性能监控）</li>
+</ol>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><ol>
+<li><code>ServiceComb</code>：前身是华为云的微服务引擎CSE(Cloud Service Engine)<br>云服务，是全球首个Apache微服务顶级项目。它提供了一站式的微服务开源解决方案，致力于帮助企业、用户和开发者将企业应用轻松微服务化上云，并实现对微服务应用的高效运维管理。</li>
+<li><code>Spring Cloud</code>：<code>Spring Cloud</code>是一系列框架的集合。它利用<code>Spring Boot</code><br>的开发便利性巧妙地简化了分布式系统基础设施的开发，如服务注册和发现、配置中心、消息总线、负载均衡、断路器、数据监控等，都可以用<code>Spring Boot</code>的开发风格做到一键启动和部署，<code>Spring Cloud</code><br>并没有重复制造轮子，它只是将目前各家公司开发的比较成熟、经得起实际考验的服务框架组合起来，通过<code>Spring Boot</code>风格进行再封装屏蔽掉了复杂的配置和实现原理，最终给开发者留出了一套简单易懂、易部署和易维护的分布式系统开发工具包。</li>
+<li><code>Spring Cloud Alibaba</code>：<code>Spring Cloud Alibaba</code>是<code>Spring Cloud</code><br>的扩展，致力于提供微服务开发的一站式解决方案，此项目包含开发分布式应用微服务的必需组件，方便开发者通过<code>Spring Cloud</code>编程模型轻松使用这些组件来开发分布式应用服务。</li>
+<li><code>Dubbo + Zookeeper</code>：基于Java的高性能RPC分布式服务框架，致力于提供高性能和透明化的RPC远程服务调用方案，以及SOA服务治理方案。</li>
+</ol>
+<h2 id="组件框架"><a href="#组件框架" class="headerlink" title="组件框架"></a>组件框架</h2><ol>
+<li>治理中心（注册、发现、移除）：<code>Eureka</code>、<code>Zookeeper</code>、<code>Nacos</code>、<code>Consul</code></li>
+<li>配置中心：<code>Config</code>、<code>Naocs</code></li>
+<li>服务网关：<code>Zuul</code>、<code>Gateway</code></li>
+<li>服务降级：<code>Hystrix</code>、<code>Sentinel</code>、<code>Resilience4j</code></li>
+<li>服务总线：<code>Bus</code>、<code>Nacos</code></li>
+<li>服务调用：<code>Ribbon</code>、<code>OpenFeign</code>、<code>RestTemplate</code></li>
+<li>分布式事务：<code>Seata</code></li>
+<li>自动部署：<code>Jenkins</code>、<code>Docker</code></li>
+<li>链路追踪：<code>Sleuth Zipkin</code>、<code>SkyWalking</code></li>
+</ol>
+<h3 id="Eureka"><a href="#Eureka" class="headerlink" title="Eureka"></a>Eureka</h3><ol>
+<li>EurekaService：客户端服务注册、发现和移除</li>
+<li>EurekaClient：既是服务提供者也是消费者，向服务中心注册，并拉取其他客户端信息<ul>
+<li>消费者根据负载均衡策略选择一个服务者实例发起请求</li>
+</ul>
+</li>
+</ol>
+<h3 id="Config"><a href="#Config" class="headerlink" title="Config"></a>Config</h3><ol>
+<li>git：保存配置文件信息</li>
+<li>ConfigService：自动从git获取最新配置文件信息并缓存</li>
+<li>ConfigClient：<ul>
+<li>手动调用<code>/actuator/refresh</code>获取ConfigService的配置信息并刷新配置</li>
+<li>如果集成了<code>Bus</code>，ConfigService可以自动通知ConfigClient刷新配置</li>
+</ul>
+</li>
+</ol>
+<h3 id="Nacos"><a href="#Nacos" class="headerlink" title="Nacos"></a>Nacos</h3><ol>
+<li>注册流程<ul>
+<li>启动注册中心，在配置中心写入配置信息，持久化到磁盘并与集群的其他注册中心同步配置信息</li>
+<li>客户端启动时发起注册请求，从配置中心拉取配置并缓存到本地，获取可用服务的实例列表</li>
+<li>服务中心将客户端服务的名称、地址、端口号等信息存入注册表并生成唯一ID</li>
+<li>服务调用：每个客户端既是服务提供者也是服务消费者<ul>
+<li>服务消费者根据Nacos负载均衡策略选择一个服务提供者发起调用请求</li>
+<li>服务提供者收到请求后处理并返回响应结果</li>
+</ul>
+</li>
+<li>配置变更时，通知对应的客户端重新拉取配置信息并刷新</li>
+</ul>
+</li>
+<li>配置中心<ul>
+<li>发布与订阅：开发者可以将配置信息发布到 Nacos 配置中心，并订阅自己关心的配置信息</li>
+<li>变更通知：当配置信息发生变化时，Nacos 配置中心会主动推送变更通知给订阅者</li>
+<li>版本管理：Nacos支持配置的版本管理，方便开发者回滚到之前的配置版本</li>
+<li>分组与标签：Nacos支持配置的分组和标签功能，方便开发者对配置进行分类和管理</li>
+<li>加密与解密：Nacos支持对敏感配置信息进行加密和解密操作，保证配置信息的安全性</li>
+<li>持久化：配置信息持久化到磁盘</li>
+<li>集群：多个Nacos服务之间通过Raft协议同步数据，保证数据一致性</li>
+<li>健康检测：定期检测配置信息，自动摘除不健康的配置信息</li>
+<li>备份与恢复：支持配置信息导入导出和定期远程备份</li>
+</ul>
+</li>
+<li>数据模型<ul>
+<li><code>Namespace</code>：命名空间，用于隔离不同环境的配置信息</li>
+<li><code>Config</code>：配置项，包含配置键、配置值、配置描述等信息，一个配置项可以属于多个命名空间</li>
+<li><code>Group</code>：配置分组，对配置项进行分组管理</li>
+<li><code>Tag</code>：标签，对配置项进行标记和分类</li>
+<li><code>Instance</code>：实例，包含地址、端口号、权重、健康状态等信息，一个实例只属于一个服务</li>
+<li><code>Service</code>：服务，包含一个唯一的服务名称，一个服务可以有多个实例</li>
+</ul>
+</li>
+<li>负载均衡和服务治理<ul>
+<li>负载均衡：支持轮询、加权、随机、最小连接等负载均衡策略</li>
+<li>服务鉴权：支持基于<code>AccessKey</code>和<code>SecretKey</code>的鉴权机制，保证服务调用的安全性</li>
+<li>限流熔断：支持基于令牌桶和漏桶算法的限流策略，以及基于<code>Hystrix</code>的熔断策略，保证服务调用的稳定性</li>
+<li>路由策略：支持基于权重、标签、元数据等属性的路由策略，实现服务的灵活调度</li>
+<li>服务灰度：支持基于流量分组的灰度发布策略，实现服务的平滑升级</li>
+</ul>
+</li>
+</ol>
+<h3 id="Ribbon"><a href="#Ribbon" class="headerlink" title="Ribbon"></a>Ribbon</h3><ol>
+<li><code>RestTemplate</code>：基于HTTP的远程服务调用</li>
+<li>负载均衡：发起远程服务调用时，由Ribbon获取服务列表并根据规则选择某个具体的服务发起调用<ul>
+<li>简单轮询、忽略连接失败或并发量高的服务、根据服务响应时间加权、Zone分区、随机</li>
+</ul>
+</li>
+<li>重试机制：自身实例重试后选择其他实例</li>
+</ol>
+<h3 id="OpenFeign"><a href="#OpenFeign" class="headerlink" title="OpenFeign"></a>OpenFeign</h3><p>基于注解的声明式Web服务客户端，通过注解和接口的形式来绑定服务端，简化了客户端与远程Http服务的交互过程。</p>
+<ol>
+<li>声明式接口编程，远程调用被抽象成接口调用<ul>
+<li>通过<code>@EnableFeignClients</code>注解启动Feign客户端</li>
+<li>通过在接口上标注<code>@FeignClient</code>注解绑定远程服务</li>
+<li>接口方法上使用<code>@RequestMapping</code>注解绑定远程服务的具体API</li>
+</ul>
+</li>
+<li>自动构建HTTP请求和解析HTTP响应<ul>
+<li>自定义请求拦截器：实现<code>RequestInterceptor</code>接口的<code>apply()</code>，传递token等参数</li>
+<li><code>fallback</code>：降级处理</li>
+<li><code>fallbackFactory</code>：降级处理，并可以记录导致降级的异常原因</li>
+</ul>
+</li>
+<li>负载均衡：集成Ribbon<ul>
+<li>服务发现：从服务中心获取了服务的所有实例</li>
+<li>请求拦截：发送请求时转发给Ribbon，由Ribbon负载均衡策略发送给具体的实例，最后返回响应</li>
+</ul>
+</li>
+<li>熔断&#x2F;重试：集成Hystrix&#x2F;Resilience4j&#x2F;Spring Retry&#x2F;Sentinel<ul>
+<li>通过<code>@EnableHystrix</code>&#x2F;<code>@EnableRetry</code>注解开启功能</li>
+<li>配置熔断&#x2F;重试参数</li>
+</ul>
+</li>
+<li>数据压缩：配置服务端和客户端支持GZIP</li>
+<li>连接池：引入<code>feign-httpclient</code>依赖并配置连接池参数</li>
+<li>日志：配置全局日志和服务日志级别</li>
+</ol>
+<h3 id="Gateway"><a href="#Gateway" class="headerlink" title="Gateway"></a>Gateway</h3><p>网关作为微服务系统的统一入口，提供了身份认证、权限校验、服务路由、负载均衡、请求限流、跨域的功能。</p>
+<p>Gateway基于WebFlux响应式编程，用于网络请求的转发，可以使用默认和自定义过滤器过滤请求，且不会影响接口原来的功能。</p>
+<ol>
+<li>使用：网关从配置中心获取服务列表，根据路由规则转发请求到指定服务，并可以配置规则过滤请求。<ul>
+<li>引入网关和服务发现依赖<ul>
+<li><code>spring-cloud-starter-gateway</code></li>
+<li><code>spring-cloud-starter-alibaba-nacos-discovery</code></li>
+</ul>
+</li>
+<li>配置服务中心地址、路由、过滤器、跨域：<ul>
+<li><code>spring.cloud.nacos.server-addr</code></li>
+<li><code>spring.cloud.gateway.routes</code></li>
+<li><code>spring.cloud.gateway.filters</code></li>
+<li><code>spring.cloud.gateway.globalcors</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>请求限流<ul>
+<li>计数器算法：固定时间内处理固定数量的请求，请求到达上线就会被丢弃，直到计数器清零</li>
+<li>漏桶算法：所有请求加入桶，桶以固定速度执行请求；桶满则丢弃多余请求，桶空则停止执行</li>
+<li>令牌桶算法：以固定速度向桶中加入令牌，请求必须获得令牌才能执行；桶满丢弃多余令牌，桶空丢弃多余请求</li>
+<li>通过<code>reactor.Mono</code>可实现针对URL、IP、用户的限流</li>
+</ul>
+</li>
+<li>路由<ul>
+<li>id：自定义的路由id，全局唯一即可</li>
+<li>uri：路由目标，路由目标，<a href="http://ip:port表示固定地址，lb://service表示负载均衡">http://ip:port表示固定地址，lb://service表示负载均衡</a></li>
+<li>predicates：路由断言，十多种，如路径断言（Path）、时间断言（After、Before、Between）、IP断言（RemoteAddr）、请求断言（Cookie、Header、Host、Method、Query）</li>
+<li>filters：路由过滤器</li>
+</ul>
+</li>
+<li>路由过滤器：Gateway提供31种路由过滤器，可以处理单个路由或所有路由<ul>
+<li>*Header：可在请求和响应的header中添加或移除属性</li>
+<li>RequestRateLimiter：限制请求的流量</li>
+<li>过滤器链顺序：Order越小优先级越高，Order相同默认过滤器-&gt;路由过滤器-&gt;全局过滤器</li>
+</ul>
+</li>
+</ol>
+<h3 id="Sentinel"><a href="#Sentinel" class="headerlink" title="Sentinel"></a>Sentinel</h3><p>用于微服务流量控制的组件，提供可视化控制台、熔断降级、限流和自定义扩展等功能。</p>
+<ol>
+<li>集成<ul>
+<li>引入依赖：<code>spring-cloud-starter-alibaba-sentinel</code></li>
+<li>配置参数：<ul>
+<li><code>spring.cloud.sentinel.transport.dashboard: localhost:port</code></li>
+<li><code>spring.cloud.sentinel.transport.dashboard.auth.username</code></li>
+<li><code>spring.cloud.sentinel.transport.dashboard.auth.password</code></li>
+<li><code>spring.cloud.sentinel.transport.dashboard.auth.password</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>簇点链路：一个请求的调用链路，链路中每个接口都是一个资源，流控、熔断等都是针对资源设置规则的</li>
+<li>流控模式：针对资源设置QPS（每秒处理的请求数）阈值规则来流控<ul>
+<li>直接：针对一个资源</li>
+<li>关联：针对关联资源，A关联B，B触发阈值后会触发A的流控</li>
+<li>链路：针对资源的指定入口资源</li>
+</ul>
+</li>
+<li>流控效果：资源触发阈值后的处理<ul>
+<li>快速失败：达到阈值后，新的请求会被立即拒绝并抛出FlowException异常</li>
+<li>预热：达到阈值后，新的请求会被立即拒绝并抛出FlowException异常，但阈值会逐渐增大</li>
+<li>排队：让所有的请求按照先后次序排队执行，等待超时的请求会被拒绝并抛出异常</li>
+</ul>
+</li>
+<li>线程隔离和降级熔断：当微服务调用链某个节点出现问题时，会导致上游节点甚至是整个环节不可用，从而导致服务雪崩，解决方法有线程隔离和降级熔断，以此保护上游节点<ul>
+<li>线程隔离：基于线程池隔离或信号量隔离，保证上游节点不会将全部线程用于一个下游节点</li>
+<li>降级熔断：由断路器统计某个服务调用的异常比例、慢请求比例，超过阈值则认为服务不可用并触发熔断，即拦截所有对该服务的请求，只尝试放行一次请求直到服务可用或到达熔断时长才放行所有请求</li>
+</ul>
+</li>
+<li>熔断策略<ul>
+<li>慢调用比例：固定时间内请求数量、业务响应时长超过阈值</li>
+<li>异常比例：固定时间请求数量、异常请求比例超过阈值</li>
+<li>异常数：固定时间请求数量、异常请求数量超过阈值</li>
+</ul>
+</li>
+<li>授权规则：黑、白名单，指定哪些来源的请求（网关、浏览器）可以访问服务<ul>
+<li>通过实现<code>RequestOriginParser.parseOrigin()</code>获取<code>origin</code>请求来源</li>
+</ul>
+</li>
+<li>自定义异常提示：默认情况下，发生限流、降级、授权拦截时，都会抛出异常到调用方<ul>
+<li>通过实现<code>BlockExceptionHandler.handle()</code>可返回自定义异常提示信息</li>
+<li><code>FlowException</code>：限流异常</li>
+<li><code>ParamFlowException</code>：热点参数限流异常</li>
+<li><code>DegradeException</code>：降级异常</li>
+<li><code>AuthorityException</code>：授权规则异常</li>
+<li><code>SystemBlockException</code>：系统规则异常</li>
+</ul>
+</li>
+<li>规则管理模式<ul>
+<li>原始模式：将规则推送至客户端，只更新到内存中</li>
+<li>Pull模式：将规则推送至客户端，除了更新到内存中，还会持久化到数据库或者磁盘文件</li>
+<li>Push模式：将规则推送至配置中心（Nacos、Zookeeper），客户端通过注册监听器的方式时刻监听配置中心的通知</li>
+</ul>
+</li>
+</ol>
+<h3 id="Hystrix"><a href="#Hystrix" class="headerlink" title="Hystrix"></a>Hystrix</h3><p>服务降级熔断防止服务雪崩</p>
+<ol>
+<li>开启功能：引入<code>spring-cloud-starter-hystrix</code>依赖，使用<code>@EnableHystrix</code>注解</li>
+<li>开启可视化：引入<code>spring-cloud-starter-hystrix-dashboard</code>依赖，使用<code>@EnableHystrixDashboard</code>注解</li>
+<li>指定接口方法熔断：<code>@HystrixCommand(fallbackMethod = &quot;hystrixMethod&quot;)</code></li>
+<li>指定接口所有方法：引入OpenFeign依赖，配置fallbackFactory</li>
+</ol>
+<h3 id="Seata"><a href="#Seata" class="headerlink" title="Seata"></a>Seata</h3><ol>
+<li>事务管理<ul>
+<li>TC（Transaction Coordinate）：事务协调者，维护全局和分支事务的状态，协调全局事务提交或回滚</li>
+<li>TM（Transaction Manager）：事务管理器，定义全局事务的范围，开启、提交、回滚全局事务</li>
+<li>RM（Resource Manager）：资源管理器，管理分支事务处理的资源，向TC注册分支事务和报告分支事务的状态，驱动分支事务提交或回滚</li>
+</ul>
+</li>
+<li>分布式事务模式<ul>
+<li>XA模式：强一致性分阶段事务模式，牺牲了可用性，无业务入侵</li>
+<li>TCC模式：最终一致性分阶段事务模式，有业务入侵</li>
+<li>AT模式：默认模式，最终一致性分阶段事务模式，无业务入侵</li>
+<li>SAGA模式：长事务模式，有业务入侵</li>
+</ul>
+</li>
+<li>XA模式：遵循XA规范的分阶段提交的分布式事务模型<ul>
+<li>XA规范：一种分布式事务处理的标准，定义了TC、TM和RM之间的标准接口来实现分布式事务的提交和回滚，几乎所有主流数据库都支持XA规范</li>
+<li>第一阶段：<ul>
+<li>TM向TC注册全局事务，调用分支微服务事务</li>
+<li>微服务通过RM锁定自身资源，向TC注册分支事务，并执行各自的事务SQL</li>
+<li>分支事务结束后不会立即提交或回滚，而是向TC报告分支事务执行状态</li>
+</ul>
+</li>
+<li>第二阶段：<ul>
+<li>分支事务方法结束，TM提交或回滚全局事务</li>
+<li>TC根据分支事务状态通知RM提交或回滚分支事务（如果全部成功则提交，如果有失败则回滚）</li>
+</ul>
+</li>
+<li>优点：强一致性，满足ACID原则；主流数据库支持XA模式，实现简单且无业务入侵</li>
+<li>缺点：分支事务开始后RM会锁定数据库资源，等到TC决定提交或回滚时才释放，性能较差；依赖关系数据库的事务</li>
+</ul>
+</li>
+<li>AT模式：分阶段提交的分布式事务模型，不过优化了XA模式资源锁定周期过长带来的性能问题<ul>
+<li>第一阶段：<ul>
+<li>TM向TC注册全局事务，调用分支微服务事务<ul>
+<li>微服务通过RM锁定自身资源，向TC注册分支事务，并记录资源的<code>undo log</code>快照，执行各自的事务SQL</li>
+<li>分支事务结束后立即提交或回滚，并向TC报告分支事务执行状态</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>第二阶段：<ul>
+<li>分支事务方法结束，TM提交或回滚全局事务</li>
+<li>TC根据分支事务状态通知RM提交或回滚分支事务（如果全部成功则提交，如果有失败则回滚）</li>
+<li>分支事务在一阶段已经完成提交&#x2F;回滚，这里的提交是指删除快照，回滚是指根据快照恢复数据</li>
+</ul>
+</li>
+<li>脏写问题：全局事务1回滚导致全局事务2或非全局事务提交的修改失效</li>
+<li>解决脏写：写隔离<ul>
+<li>全局锁&#x2F;行级锁：全局事务的分支事务一阶段结束需要获取全局锁才能进入二阶段，否则回滚</li>
+<li>记录分支事务执行前后的快照，二阶段回滚恢复数据时比较当前数据和快照数据，不一致则发出预警需要人工介入</li>
+</ul>
+</li>
+<li>优点：写隔离；及时释放锁定的资源，性能较好；实现简单且无业务入侵</li>
+<li>缺点：软一致性，第二阶段结束状态才最终一致；快照功能有极小的性能影响</li>
+<li>实现：需要在TC服务数据库增加全局锁表（lock_table）、在微服务数据库增加快照表（undo_log）</li>
+</ul>
+</li>
+<li>TCC模式：与AT模式类似，但由业务入侵，即需要编码补偿机制实现全局事务的提交或回滚<ul>
+<li>补偿机制：<ul>
+<li>Try：资源检测和预留，完成业务操作</li>
+<li>Confirm：删除预留记录；默认Try成功Confirm一定能成功</li>
+<li>Cancel：释放预留资源，恢复业务操作</li>
+</ul>
+</li>
+<li>第一阶段：<ul>
+<li>TM向TC注册全局事务，调用分支微服务事务</li>
+<li>分支事务向TC注册分支事务，再Try资源预留，并向TC报告分支事务状态</li>
+</ul>
+</li>
+<li>第二阶段：<ul>
+<li>分支事务方法结束，TM提交或回滚全局事务</li>
+<li>TC根据分支事务状态通知RM执行Confirm提交或Cancel回滚分支事务（如果全部成功则提交，如果有失败则回滚）</li>
+</ul>
+</li>
+<li>问题：<ul>
+<li>幂等性：Confirm&#x2F;Cancel失败或因网络问题导致没有收到RM返回通知，TC会重试Confirm&#x2F;Cancel</li>
+<li>悬挂：cancel比try先执行，导致try的资源无法cancel</li>
+<li>空回滚：在没有Try参与的情况下执行了Cancel</li>
+</ul>
+</li>
+<li>解决方案：新增TCC事务控制表tcc_fence_log，包括一个状态字段status<ul>
+<li>tcc_fence_log：Try成功插入一条记录</li>
+<li>status：1（tried）、2（committed）、3（rollbacked）、status字段增加状态：4（suspended）</li>
+<li>一阶段Try设置1，二阶段Confirm&#x2F;Cancel成功从1设置成2&#x2F;3，重复调用时判断状态即可</li>
+<li>Cancel时先于Try设置成4，后续try判断是4就失败</li>
+<li>Cancel时判断是否有记录来确定是否有Try</li>
+</ul>
+</li>
+<li>优点：不需要全局锁和快照，及时释放锁定的资源，性能最好</li>
+<li>缺点：软一致性，第二阶段结束状态才最终一致；实现复杂且有业务入侵</li>
+<li>实现：需要在微服务数据库增加TCC事务控制表（tcc_fence_log）<ul>
+<li><code>@GlobalTransactional</code>、<code>@Transactional</code>、<code>@LocalTCC</code></li>
+<li><code>@TwoPhaseBusinessAction(name = &quot;tryMethod&quot;, commitMethod = &quot;commitMethod&quot;, rollbackMethod = &quot;rollbackMethod&quot;, useTCCFence = true)</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>SAGA模式：分阶段长事务解决方案<ul>
+<li>补偿机制：状态机+DSL-JSON&#x2F;拦截器+注解</li>
+<li>第一阶段：直接提交本地事务</li>
+<li>第二阶段：如果失败通过补偿机制来回滚</li>
+<li>优点：一阶段直接提交分支事务，无锁；基于事件驱动的异步调用；有业务入侵但实现简单</li>
+<li>缺点：分支事务状态持续时间不确定，时效性差；可能有脏写；引入状态机有业务入侵</li>
+</ul>
+</li>
+<li>集成：引入<code>spring-cloud-starter-alibaba-seata</code>依赖，nacos配置seata-tc-service，发起全局事务的入口方法上使用<code>@GlobalTranscation</code>注解，</li>
+</ol>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">seata:</span></span><br><span class="line">  <span class="attr">registry:</span></span><br><span class="line">    <span class="attr">type:</span> <span class="string">nacos</span></span><br><span class="line">    <span class="attr">nacos:</span></span><br><span class="line">      <span class="attr">server-addr:</span> <span class="string">localhost:8848</span></span><br><span class="line">      <span class="attr">namespace:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">      <span class="attr">group:</span> <span class="string">DEFAULT-GROUP</span></span><br><span class="line">      <span class="attr">application:</span> <span class="string">seata-tc-service</span></span><br><span class="line">  <span class="attr">tx-service-group:</span> <span class="string">seata-demo</span></span><br><span class="line">  <span class="attr">service:</span></span><br><span class="line">    <span class="attr">vgroup-mapping:</span></span><br><span class="line">      <span class="attr">seata-demo:</span> <span class="string">SH</span></span><br><span class="line">  <span class="attr">data-source-proxy-mode:</span> <span class="string">XA/AT/TCC/SAGA</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Zookeeper"><a href="#Zookeeper" class="headerlink" title="Zookeeper"></a>Zookeeper</h3><p>基于Java+观察者模式开发的面向分布式应用程序的分布式服务管理框架，它设计了一种类似文件目录树状结构的数据模型，存储和管理客户端服务的数据信息，并且接受观察者的注册，一旦观察者关心的数据发生变化，就会发出通知让对应的观察者作出反应，从而实现数据发布&#x2F;订阅、配置维护、分布式协调、集群、分布式锁&#x2F;队列等高级功能。</p>
+<ol>
+<li>支持单机版和一主多从集群，集群功能要有半数以上节点存活才能正常服务，所以集群节点数量适合奇数</li>
+<li>集群每个节点都保存一份相同的数据副本，客户端无论连接到哪个节点，在一定时间范围内获取的数据都是一致的</li>
+<li>来自同一个客户端的更新请求按照发送顺序依次执行</li>
+</ol>
+<h4 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h4><ol>
+<li><code>zxid</code>：zk中每个状态变化都会产生一个全局唯一的事务id，包括集群选主纪元（epoch）和一个十六进制计数器，每个更新操作根据请求顺序分配一个<code>zxid</code>，计数器数值小的先执行</li>
+<li><code>version numbers</code>：zk中有三种版本号，每次ZNode状态更改都会增加其中一个版本值<ul>
+<li><code>cversion</code>：当前ZNode的子ZNode变化时+1</li>
+<li><code>dataVersion</code>：当前ZNode的数据每次变化时+1</li>
+<li><code>aclVersion</code>：当前ZNode的acl权限每次变化时+1</li>
+</ul>
+</li>
+<li><code>ticks</code>：zk的基本时间单位，默认2000ms</li>
+<li><code>acl</code>：Access Control List，ZNode访问控制列表，格式是<code>scheme:id:permission</code>，对应访问策略、访问模式、访问权限（create、delete、read、write、admin）<ul>
+<li><code>world</code>：默认策略，不验证可访问，<code>world:anyone:cdrwa</code></li>
+<li><code>digest</code>：用户名和密码签名认证策略，<code>desgin:username:BASE64(SHA1(password)):cdrwa</code></li>
+<li><code>auth</code>：用户名+密码身份验证策略，<code>auth:username:password:cdrwa</code></li>
+<li><code>ip</code>：ip认证策略，<code>ip:127.0.0.1:cdrwa</code></li>
+</ul>
+</li>
+</ol>
+<h4 id="zk组成"><a href="#zk组成" class="headerlink" title="zk组成"></a>zk组成</h4><ol>
+<li>单机版：<ul>
+<li><code>server</code>：负责接收客户端请求并返回响应，处理更新操作</li>
+<li><code>client</code>：发起请求</li>
+</ul>
+</li>
+<li>集群：<ul>
+<li><code>server leader</code>：负责投票、决议和更新服务端状态，处理更新操作</li>
+<li><code>server follower</code>：接收客户端非事务请求并返回响应，转发事务请求给leader处理，参与投票</li>
+<li><code>server observer</code>：接收客户端非事务请求并返回响应，转发事务请求给leader处理，监听leader变化，自动读取并更新数据，不参与投票</li>
+<li><code>client</code>：发起请求</li>
+</ul>
+</li>
+</ol>
+<h4 id="数据模型"><a href="#数据模型" class="headerlink" title="数据模型"></a>数据模型</h4><p>类似文件目录树状结构的数据模型，节点称作ZNode，既可以是目录也可以是数据存储器，最大存储容量是1M，操作ZNode时必须是以&#x2F;开头的绝对路径，并且ZNode数据更新操作具有原子性，其数据结构由ZNode状态、ZNode关联的数据、子ZNode组成，主要有以下属性：</p>
+<ol>
+<li><code>cZxid</code>：ZNode被创建时的事务id</li>
+<li><code>ctime</code>：ZNode的创建时间</li>
+<li><code>mZxid</code>：ZNode最后一次更改时的事务id</li>
+<li><code>mtime</code>：ZNode最后一次更改的时间</li>
+<li><code>pZxid</code>：子ZNode列表最后一次更改时的事务id</li>
+<li><code>cversion</code>：子ZNode更改次数</li>
+<li><code>dataVersion</code>：子ZNode内容更改次数</li>
+<li><code>aclVersion</code>：ZNode的acl权限更改次数</li>
+<li><code>ephemeralOwner</code>：默认0，如果是临时ZNode则表示绑定的session-id</li>
+<li><code>dataLength</code>：ZNode关联的数据大小</li>
+<li><code>numChildren</code>：子ZNode数量</li>
+</ol>
+<h4 id="ZNode类型"><a href="#ZNode类型" class="headerlink" title="ZNode类型"></a>ZNode类型</h4><p>当客户端连接到服务端后，可以CURD服务端的ZNode，根据<code>create [-e] [-s] path value acl</code><br>命令或API创建四种不同类型的ZNode：persistent、ephemeral、persistent_sequential、ephemeral_sequential</p>
+<ol>
+<li><code>-e</code>：临时，连接断开就会删除</li>
+<li><code>-s</code>：永久，连接断开不会删除</li>
+<li><code>path</code>：绝对路径</li>
+<li><code>value</code>：顺序标识，设置后ZNode名称后会附加一个由父ZNode计数器维护的序列号，记录了子ZNode节点的创建顺序，可用于分布式系统的全局排序，同一连接不同ZNode的序列号相同</li>
+<li><code>acl</code>：权限</li>
+</ol>
+<h4 id="全局Session"><a href="#全局Session" class="headerlink" title="全局Session"></a>全局Session</h4><p>客户端与服务器基于TCP长连接，每次客户端建立连接时服务端都创建一个session会话</p>
+<ol>
+<li>session状态<ul>
+<li>创建初期短暂的connecting</li>
+<li>创建成功后的connected</li>
+<li>session关闭后的closed</li>
+</ul>
+</li>
+<li>数据结构<ul>
+<li><code>sessionId</code>：服务端全局唯一的会话id，可用于绑定临时ZNode</li>
+<li><code>timeout</code>：会话超时时间</li>
+<li><code>ticktime</code>：下次会话超时时间</li>
+<li><code>isClosing</code>：session是否关闭</li>
+</ul>
+</li>
+</ol>
+<h4 id="监听机制"><a href="#监听机制" class="headerlink" title="监听机制"></a>监听机制</h4><p>zk的监听机制主要用于及时通知，可以实现发布&#x2F;订阅、分布式锁功能，当客户端在服务端注册监听器监听指定的ZNode后，一旦ZNode发生变化时，服务端会通知所有订阅客户端完成异步回调处理。</p>
+<ol>
+<li>命令<ul>
+<li><code>ls -w path</code>：监听ZNode路径变化，只能监听ZNode本身和子ZNode，不能监听孙子ZNode</li>
+<li><code>get -w path</code>：监听ZNode数据变化</li>
+</ul>
+</li>
+<li>API：通过Watcher对象封装事件，客户端保存Watcher和ZNode回调处理的关系，服务端保存Watcher和ZNode事件触发的关系<ul>
+<li><code>keeperState</code>：通知状态</li>
+<li><code>EventType</code>：事件类型</li>
+<li><code>path</code>：ZNode路径</li>
+</ul>
+</li>
+<li>一次性：监听器触发后就会移除，即只会触发一次，想要持久监听需要触发后再监听<ul>
+<li>确保监听事件只会触发一次，避免重复处理；永久性监听器有资源消耗；实现简单提高可靠性和稳定性</li>
+</ul>
+</li>
+<li>流程<ul>
+<li>启动zk客户端时会创建两个线程，一个负责网络通信（connect），一个负责监听（listener）</li>
+<li>connect线程负责向zk服务端注册监听器（Watcher）</li>
+<li>zk服务端将监听事件注册到监听器列表</li>
+<li>另一个zk客户端修改了ZNode</li>
+<li>zk服务端监听到ZNode变化，将消息异步发送给zk客户端listener线程，同时移除监听器</li>
+<li>listener线程内部调用process方法执行监听触发后的处理，有需要则再次注册监听器</li>
+</ul>
+</li>
+<li>发布&#x2F;订阅<ul>
+<li>订阅：多个消费者客户端注册某个ZNode监听器</li>
+<li>发布：多个生成者客户端更改ZNode</li>
+</ul>
+</li>
+<li>分布式锁<ul>
+<li><p>多个客户端向某个ZNode下创建有序临时ZNode，并判断自己的顺序</p>
+</li>
+<li><p>如果是第一位：获取到锁，执行业务逻辑，删除自身子ZNode来释放锁</p>
+</li>
+<li><p>如果不是第一位：监听前一位ZNode的删除事件并阻塞</p>
+</li>
+<li><p>监听到前一位ZNode删除事件，获取到锁</p>
+</li>
+<li><p>多个客户端竞争锁，向zf服务端创建同一个临时ZNode（锁节点）</p>
+</li>
+<li><p>如果创建成功，说明获取到锁</p>
+</li>
+<li><p>如果创建失败，说明没有获取到锁，需要注册锁节点删除事件并阻塞</p>
+</li>
+<li><p>监听到锁节点删除事件，被唤醒重新竞争锁</p>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="集群"><a href="#集群" class="headerlink" title="集群"></a>集群</h4><ol>
+<li>ZAB协议：Zookeeper Atomic Broadcast，zk原子广播，是zk专门设计的支持崩溃恢复和主从同步的协议<ul>
+<li><code>Looking</code>：选举状态</li>
+<li><code>Following</code>：从节点状态</li>
+<li><code>Leading</code>：主节点状态</li>
+<li><code>observering</code>：观察者节点状态</li>
+</ul>
+</li>
+<li>崩溃恢复（选举机制）：当主节点失效，集群失去服务能力，会选出新的主节点<ul>
+<li>选举阶段：选出最大<code>zxid</code>的节点<ul>
+<li>从节点都处于Looking状态，并向其他从节点发起投票（myid和最新<code>zxid</code>）</li>
+<li>比较自身<code>zxid</code>和其他从节点投票中的<code>zxid</code>，如果自身的较小则重新发起投票（最大<code>zxid</code>和对应的myid），自身选举纪元（epoch）+1</li>
+<li>每次投票统计投票数量，如果存在获得半数以上票数的从节点，那这个从节点状态改为leading成为准主节点，其他从节点状态改为following成为准从节点</li>
+</ul>
+</li>
+<li>发现阶段：重新在从节点中找到最新的<code>zxid</code>，防止因网络原因等意外情况在选举阶段产生多个主节点<ul>
+<li>following节点发送各自epoch给leading节点，leading节点选出最大的epoch，+1并分发给following节点</li>
+<li>following节点收到最新epoch，返回各自最大<code>zxid</code>和历史事务日志</li>
+<li>leading节点选出最大<code>zxid</code>节点，如果有比自身还大的则获取历史事务日志</li>
+</ul>
+</li>
+<li>同步阶段：选出最终主节点<ul>
+<li>leading节点将最新事务日志同步给所有following节点</li>
+<li>只有半数以上的following节点同步成功成为从节点，leading节点才正式成为主节点</li>
+</ul>
+</li>
+<li>广播阶段：正式对外提供服务，主节点广播消息同步数据<ul>
+<li>zk的ZAB协议故障恢复完成之前，zk集群无法使用，即牺牲可用性保证数据一致性（CP）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>写操作流程：主从同步，不能保证数据强一致性<ul>
+<li>客户端发出写入数据请求，如果发给任意follower，follower把写入数据请求转发给leader处理</li>
+<li>leader采用二阶段提交方式，先发送提案广播消息给follower</li>
+<li>follower接到提案广播消息，写入日志成功后，返回ACK消息给leader</li>
+<li>leader接到半数以上ACK消息，返回成功给客户端，并且广播commit消息给follower</li>
+</ul>
+</li>
+<li>集群脑裂：发生网络分区导致出现多个主节点，一部分客户端连接了新主节点，另一部分还连接着旧主节点<ul>
+<li>解决方案：过半机制，选举时必须是observer除外的所有服务端节点数量的一半以上选出主节点，因此集群节点数量必须是奇数</li>
+</ul>
+</li>
+</ol>
+<h4 id="集成"><a href="#集成" class="headerlink" title="集成"></a>集成</h4><ol>
+<li>服务端：Zookeeper服务端通常从官网下载并解压运行，其配置位于Conf目录下的zoo.cfg文件中<ul>
+<li><code>tickTime</code>：服务端与客户端的通信心跳时间</li>
+<li><code>dataDir</code>：保存客户端数据快照文件的目录，集群模式下需要创建<code>myid</code>文件，内容是255以内的数字，表示节点的id</li>
+<li><code>dataLogDir</code>：保存服务端日志文件的目录</li>
+<li><code>ClientPort</code>：服务端端口号，默认2181</li>
+<li><code>initLimit</code>：集群模式下首次启动时主从同步通信的时间次数，超时时间为initLimit * tickTime</li>
+<li><code>syncLimit</code>：集群模式下非首次启动时主从异步通信的时间次数，超时时间为syncLimit * tickTime</li>
+<li><code>server.id=ip:port1:port2:[observer]</code>：集群模式下所有节点的配置，id是<code>myid</code><br>文件内容，port1主从节点交换数据的端口，port2是集群选主的端口，observer表示该节点是observer类型</li>
+</ul>
+</li>
+<li>命令<ul>
+<li>启动、停止、状态检查命令：<code>zkServer.sh start/stop/status</code></li>
+<li>启动命令：<code>zkServer.sh start-foreground</code>，输出日志</li>
+<li>连接命令：<code>ZkClient.sh -server ip:port [ip1:port1...]</code>，随机连接一个节点</li>
+<li>服务端命令<ul>
+<li><code>conf</code>：zk服务配置的详细信息</li>
+<li><code>stat</code>：客户端与zk连接的简要信息</li>
+<li><code>srvr</code>：zk服务的详细信息</li>
+<li><code>cons</code>：客户端与zk连接的详细信息</li>
+<li><code>mntr</code>：zk服务目前的性能状况</li>
+<li><code>wchs</code>：watch的简要信息</li>
+<li><code>wchc</code>：watch的详细信息，客户端到watch的映射</li>
+<li><code>wchp</code>：watch的详细信息，ZNode到watch的映射</li>
+<li><code>help</code>：输出zk支持的所有命令</li>
+<li>ZNode相关的命令：ls、create、get、set、delete、getAcl、setAcl等</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>客户端：引入<code>zookeeper</code>客户端依赖并配置服务端地址</li>
+<li>客户端：引入<code>ZkClient</code>依赖（zk客户端）并配置服务端地址</li>
+<li>客户端：引入<code>Curator</code>依赖（zk客户端）并配置服务地址<ul>
+<li><code>curator-client</code>：zk基础客户端实现，如连接、重试、超时处理等</li>
+<li><code>curator-framework</code>：包含高层级流式API，构建在基础客户端之上</li>
+<li><code>curator-recipes</code>：包含各项高级功能的实现，如读写锁、互斥锁、队列等</li>
+</ul>
+</li>
+</ol>
+<h3 id="Dubbo"><a href="#Dubbo" class="headerlink" title="Dubbo"></a>Dubbo</h3><p>Dubbo是一个高性能的RPC框架，主要提供三个核心功能：服务注册和发现、智能容错和负载均衡、面向接口远程调用</p>
+<ol>
+<li>注册中心：支持多种注册中心。服务提供者启动时，向注册中心注册自己的服务。消费者启动时，订阅自己需要的服务，一旦注册中心的服务列表变更，消费者能够感知。</li>
+<li>服务提供者：在Dubbo中，服务提供者通过暴露服务的方式向注册中心注册自己的服务。</li>
+<li>服务消费者：服务消费者通过注册中心订阅服务，并使用服务提供者暴露的服务。</li>
+<li>监控中心：Dubbo提供了一个可视化的监控中心，用于展示服务的调用统计、方法调用次数、调用时间等。</li>
+<li>容错机制：Dubbo提供了多种容错策略，如重试机制、容错切换、负载均衡等。</li>
+<li>序列化机制：Dubbo支持多种序列化协议，如Hessian2、Dubbo、HTTP等。</li>
+</ol>
+<h4 id="暴露和引用"><a href="#暴露和引用" class="headerlink" title="暴露和引用"></a>暴露和引用</h4><ol>
+<li>ProviderConfig：服务提供者配置类，可以用于配置服务的接口、服务实现类、协议等，还可以设置暴露服务所用的协议、权重、端口号等信息<ul>
+<li>暴露过程中，首先需要解析配置，根据配置中的协议创建相应的协议实现</li>
+<li>将协议绑定到指定的IP和端口上</li>
+<li>将服务地址信息注册到注册中心，以供其他调用者查询</li>
+<li>通知订阅者（监听器）服务地址信息的变化</li>
+<li>调用者接收到订阅者的通知，得知服务地址信息变化</li>
+<li>调用者通过网络层向提供者发起调用请求</li>
+<li>提供者处理请求后，返回结果给调用者</li>
+</ul>
+</li>
+<li>ConsumerConfig：服务消费者配置类，可以用于配置服务消费者所接口、协议等信息，还可以设置引用服务所用的协议、集群等信息<ul>
+<li>解析配置，根据配置中的协议创建相应的协议实现</li>
+<li>连接到指定的服务中心地址</li>
+<li>查询注册中心，获取对应服务地址信息</li>
+<li>返回服务地址信息给调用者</li>
+<li>提供者处理调用请求，返回结果给调用者</li>
+<li>调用者接收到结果，结束调用过程</li>
+</ul>
+</li>
+</ol>
+<h4 id="注册中心"><a href="#注册中心" class="headerlink" title="注册中心"></a>注册中心</h4><p>用于管理服务提供者的注册与发现，使服务消费者能够动态地发现和访问服务提供者</p>
+<ol>
+<li>Zookeeper</li>
+<li>Redis</li>
+<li>Multicast</li>
+<li>Nacos</li>
+</ol>
+<h4 id="服务提供者和服务消费者"><a href="#服务提供者和服务消费者" class="headerlink" title="服务提供者和服务消费者"></a>服务提供者和服务消费者</h4><ol>
+<li>服务提供者：提供服务的主体，通常会暴露自己的服务接口，并通过某种协议提供服务<ul>
+<li>向注册中心注册服务</li>
+</ul>
+</li>
+<li>服务消费者：使用服务的主体，通常会引用提供者的服务接口，并通过某种协议调用服务<ul>
+<li>服务消费者向注册中心订阅服务，获取服务提供者的地址信息，然后调用服务提供者的服务</li>
+</ul>
+</li>
+</ol>
+<h4 id="负载均衡、集群容错"><a href="#负载均衡、集群容错" class="headerlink" title="负载均衡、集群容错"></a>负载均衡、集群容错</h4><ol>
+<li>负载均衡：服务消费者在调用服务提供者时从多个服务提供者中选择一个进行调用<ul>
+<li>加权随机：根据权重随机调用</li>
+<li>加权轮询：根据权重轮询调用</li>
+<li>最少活跃：服务提供者收到的请求越少越不活跃，越不活跃的服务提供者收到的请求越少</li>
+<li>一致性hash：根据请求参数调用</li>
+</ul>
+</li>
+<li>集群容错：当服务提供者发生故障时，选择其他可用的节点<ul>
+<li>Invoker：调用器，将消费者的请求转换成可执行的任务并执行</li>
+<li>Cluster：集群容错模块，将多个Invoker封装成一个集群</li>
+<li>Failover：失败自动切换容错策略，如果某次调用失败，会自动切换到下一个Invoker进行调用，直到成功为止</li>
+<li>Failfast：快速失败容错策略，如果某次调用失败，会立即抛出异常</li>
+<li>Failsafe：失败安全保护容错策略，如果某次调用失败，会记录下异常，但不会抛出异常</li>
+<li>Failback：失败重试容错策略，如果某次调用失败，会在后台异步重试</li>
+<li>Forking：并行调用容错策略，将请求并发调用多个Invoker，只要有一个Invoker成功返回结果，就立即返回</li>
+<li>Broadcast：逐个调用容错策略，逐个调用多个Invoker</li>
+</ul>
+</li>
+</ol>
+<h4 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h4><ol>
+<li>接口层：定义了服务提供者和服务消费者之间的通信接口</li>
+<li>配置层：配置层的作用是通过配置文件或代码来配置Dubbo的各种参数，包括连接参数、超时时间、重试次数等等。Dubbo支持多种配置方式，包括XML配置、注解配置和属性配置</li>
+<li>基础设施层：底层架构，包括RPC框架、网络通信、心跳检测、序列化和反序列化等实现细节</li>
+</ol>
+<h4 id="扩展机制"><a href="#扩展机制" class="headerlink" title="扩展机制"></a>扩展机制</h4><ol>
+<li>SPI机制（Service Provider Interface）<ul>
+<li>通过Java的ServiceLoader加载classpath下的自定义的接口实现类替换接口默认的实现</li>
+<li>默认目录：MATE-INF&#x2F;services</li>
+</ul>
+</li>
+<li>Adaptive机制<ul>
+<li>对SPI机制的一种补充，可以根据不同的场景自动适配最合适的实现类</li>
+<li>Adaptive机制通过动态生成的代理类来实现</li>
+</ul>
+</li>
+<li>Extension机制：扩展机制的核心<ul>
+<li>允许开发者自定义Dubbo的各种插件，包括Protocol、Transport和Serialization</li>
+<li>通过@SPI和@Adaptive注解实现，通过实现指定接口和在注解中指定拓展名，来实现自定义插件的加载和使用</li>
+</ul>
+</li>
+<li>通过SPI机制或者Extension机制实现自定义扩展</li>
+<li>通过Filter接口和扩展机制实现自定义过滤器，可用于监控、鉴权、统计、日志等</li>
+<li>通过LoadBalance接口和扩展机制实现自定义负载均衡</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/05/07/MySql/" rel="prev" title="MySql">
+                  <i class="fa fa-angle-left"></i> MySql
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">JTRAINBOW</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

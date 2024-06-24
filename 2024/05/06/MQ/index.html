@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"jtrainbow.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="MQ（Message Queue，消息队列）是基于队列和消息传递技术的可靠消息通信模型，可以用于异步处理、应用解耦、流量削峰。 实现MQ的主流方式有两种：  AMQP：Advanced Message Queuing Protocol，一个提供统一消息服务的应用层标准高级消息队列协议，是应用层协议的一个开放标准，为面向消息的中间件设计，基于此协议的客户端与消息中间件之间可以传递消息。 JMS：Ja">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MQ">
+<meta property="og:url" content="https://jtrainbow.github.io/2024/05/06/MQ/index.html">
+<meta property="og:site_name" content="JTRAINBOWの博客">
+<meta property="og:description" content="MQ（Message Queue，消息队列）是基于队列和消息传递技术的可靠消息通信模型，可以用于异步处理、应用解耦、流量削峰。 实现MQ的主流方式有两种：  AMQP：Advanced Message Queuing Protocol，一个提供统一消息服务的应用层标准高级消息队列协议，是应用层协议的一个开放标准，为面向消息的中间件设计，基于此协议的客户端与消息中间件之间可以传递消息。 JMS：Ja">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-05-05T21:01:00.745Z">
+<meta property="article:modified_time" content="2024-05-08T18:39:44.173Z">
+<meta property="article:author" content="JTRAINBOW">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://jtrainbow.github.io/2024/05/06/MQ/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://jtrainbow.github.io/2024/05/06/MQ/","path":"2024/05/06/MQ/","title":"MQ"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>MQ | JTRAINBOWの博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">JTRAINBOWの博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#RabbitMQ"><span class="nav-number">1.</span> <span class="nav-text">RabbitMQ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84"><span class="nav-number">1.1.</span> <span class="nav-text">基本结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">1.2.</span> <span class="nav-text">工作原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.3.</span> <span class="nav-text">交换机类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.4.</span> <span class="nav-text">消息类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-number">1.5.</span> <span class="nav-text">持久化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E9%9D%A0%E6%80%A7"><span class="nav-number">1.6.</span> <span class="nav-text">可靠性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%89%E5%BA%8F%E6%80%A7"><span class="nav-number">1.7.</span> <span class="nav-text">有序性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E5%A4%8D%E6%B6%88%E8%B4%B9"><span class="nav-number">1.8.</span> <span class="nav-text">重复消费</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Kafka"><span class="nav-number">2.</span> <span class="nav-text">Kafka</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">JTRAINBOW</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://jtrainbow.github.io/2024/05/06/MQ/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="JTRAINBOW">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JTRAINBOWの博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="MQ | JTRAINBOWの博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MQ
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-05-06 05:01:00" itemprop="dateCreated datePublished" datetime="2024-05-06T05:01:00+08:00">2024-05-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-05-09 02:39:44" itemprop="dateModified" datetime="2024-05-09T02:39:44+08:00">2024-05-09</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>MQ（Message Queue，消息队列）是基于队列和消息传递技术的可靠消息通信模型，可以用于异步处理、应用解耦、流量削峰。</p>
+<p>实现MQ的主流方式有两种：</p>
+<ol>
+<li>AMQP：Advanced Message Queuing Protocol，一个提供统一消息服务的应用层标准高级消息队列协议，是应用层协议的一个开放标准，为面向消息的中间件设计，基于此协议的客户端与消息中间件之间可以传递消息。</li>
+<li>JMS：Java Message Service，是一个Java平台中关于面向消息中间件的API规范，用于在两个应用程序之间或分布式系统中发送消息，进行异步通信。</li>
+</ol>
+<h2 id="RabbitMQ"><a href="#RabbitMQ" class="headerlink" title="RabbitMQ"></a>RabbitMQ</h2><p>使用Erlang语言基于AMQP协议的消息中间间，单机支持万级并发的吞吐量，高可用上支持集群模式，支持消息持久化、消息可靠传输、消息重试、死信队列等功能。</p>
+<h3 id="基本结构"><a href="#基本结构" class="headerlink" title="基本结构"></a>基本结构</h3><ol>
+<li>客户端<ul>
+<li>生产者（Producer）：发送消息的客户端</li>
+<li>消费者（Consumer）：接受消息的客户端</li>
+</ul>
+</li>
+<li>服务进程（Broker）：MQ服务进程<ul>
+<li>消息（Message）：消息，生产者发送给消费者的信息</li>
+<li>交换机（Exchange）：负责从生产者那里接收消息，并根据交换类型分发到对应的消息列队里</li>
+<li>队列（Queue）：缓存消息</li>
+<li>绑定（Binding）：队列和交换机的一个关联连接</li>
+<li>路由键（Routing Key）：供交换机查看并根据键来决定如何分发消息到列队，可以说是消息的目的地址</li>
+</ul>
+</li>
+<li>连接（Connection）：连接客户端和服务进程的TCP连接<ul>
+<li>通道（Channel）：客户端和服务进程之间的虚拟通道，用于发送或接收消息</li>
+</ul>
+</li>
+</ol>
+<h3 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h3><ol>
+<li>生产者与服务进程建立TCP连接后创建通道发送消息</li>
+<li>由交换机根据绑定关系和路由键转发消息到队列</li>
+<li>消费者与服务进程建立TCP连接后创建通道从队列消费消息</li>
+</ol>
+<h3 id="交换机类型"><a href="#交换机类型" class="headerlink" title="交换机类型"></a>交换机类型</h3><ol>
+<li>直接（Direct）：直接交换机根据消息上的路由键直接对消息分发到对应的队列</li>
+<li>扇型（Fanout）：扇型交换机会将消息发送到所有和它进行绑定的队列上<ul>
+<li>路由键不起作用</li>
+</ul>
+</li>
+<li>主题（Topic）：主体交换机会将路由键和绑定的队列进行通配符匹配<ul>
+<li><code>*</code>：表示必须出现的一个单词</li>
+<li><code>#</code>：表示可能出现0个以上的单词</li>
+</ul>
+</li>
+<li>消息头（Headers）：消息头交换机使用消息头的属性进行消息路由。</li>
+</ol>
+<h3 id="消息类型"><a href="#消息类型" class="headerlink" title="消息类型"></a>消息类型</h3><ol>
+<li>基本消息类型：生产者-&gt;交换机-&gt;消息队列-&gt;一个消费者</li>
+<li>工作队列类型：生产者-&gt;交换机-&gt;消息队列-&gt;多个消费者</li>
+<li>订阅发布类型：生产者-&gt;交换机-&gt;所有消息队列-&gt;消费者</li>
+<li>定向订阅类型：生产者-&gt;交换机-&gt;指定路由键消息队列-&gt;消费者</li>
+<li>主题订阅类型：生产者-&gt;交换机-&gt;通配符匹配消息队列-&gt;消费者</li>
+</ol>
+<h3 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h3><ol>
+<li>队列持久化：<code>durable</code>参数设置为true<ul>
+<li><code>Queue.DeclareOk Channel.queueDeclare(queueName, durable, exclusive, autoDelete, argumentsMap)</code></li>
+</ul>
+</li>
+<li>消息持久化：<code>BasicProperties.deliveryMode</code>属性1非持久、2持久化</li>
+<li>交换机持久化：<code>durable</code>参数设置为true<ul>
+<li><code>Exchange.DeclareOk Channel.exchangeDeclare(exchangeName, exchangeType, durable)</code></li>
+</ul>
+</li>
+<li><code>LazyQueue</code>：收到消息直接存入磁盘，消费时才从磁盘加载到内存</li>
+</ol>
+<h3 id="可靠性"><a href="#可靠性" class="headerlink" title="可靠性"></a>可靠性</h3><ol>
+<li>保证生产者成功发送消息到MQ<ul>
+<li><code>retry.enabled</code>：开启超时重试机制<ul>
+<li><code>retry.initial-interval</code>：失败后的初始等待时间</li>
+<li><code>retry.multiplier</code>：失败后下次的等待时长倍数</li>
+<li><code>retry.max-attempts</code>：最大重试次数</li>
+</ul>
+</li>
+<li><code>publisher-confirm-type: none/simple/correlated</code><ul>
+<li><code>rabbitTemplate.setConfirmCallback()</code></li>
+</ul>
+</li>
+<li><code>publisher-return: true</code><ul>
+<li>rabbitTemplate.setReturnCallback()</li>
+</ul>
+</li>
+<li><code>basicPublish()</code>：mandatory、immediate<ul>
+<li><code>mandatory</code>：至少将消息路由到一个队列，否则将消息返回生产者</li>
+<li><code>immediate</code>：至少将消息路由到一个队列的消费者，否则将消息返回生产者</li>
+<li>通过<code>addReturnListener()</code>监听返回事件</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>保证MQ完成消息持久化</li>
+<li>保证消费者成功消费消息<ul>
+<li><code>acknowledge-mode: none/manual/auto</code>：消费回执<ul>
+<li><code>none</code>：不处理，消费者立即返回ack，MQ直接删除消息</li>
+<li><code>auto</code>：根据处理结果返回，成功ack、业务异常nack、消息异常reject<ul>
+<li><code>ack</code>：表示消息处理成功，MQ可以删除消息</li>
+<li><code>nack</code>：处理消息处理失败，MQ需要重新投递消息</li>
+<li><code>reject</code>：表示消息处理失败并拒绝处理，MQ可以删除消息</li>
+</ul>
+</li>
+<li><code>manual</code>：手动调用API处理，返回ack、nack、reject</li>
+</ul>
+</li>
+<li><code>retry.enabled</code>：开启超时重试机制<ul>
+<li><code>retry.initial-interval</code>：失败后的初始等待时间</li>
+<li><code>retry.multiplier</code>：失败后下次的等待时长倍数</li>
+<li><code>retry.max-attempts</code>：最大重试次数</li>
+</ul>
+</li>
+<li>失败处理策略<ul>
+<li><code>RejectAndDontRequeueRecoverer</code>：重试耗尽返回reject</li>
+<li><code>ImmediateRequeueMessageRecoverer</code>：重试耗尽返回nack</li>
+<li><code>RepublishMessageRecoverer</code>：重试耗尽将消息投递到指定交换机</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="有序性"><a href="#有序性" class="headerlink" title="有序性"></a>有序性</h3><p>将消息放到同一个交换机，此交换机仅一个队列并且此队列仅只有一个消费者</p>
+<h3 id="重复消费"><a href="#重复消费" class="headerlink" title="重复消费"></a>重复消费</h3><p>每个消息用一个唯一标识来区分，消费前先判断标识有没有被消费过，若已消费过，则直接ACK</p>
+<h2 id="Kafka"><a href="#Kafka" class="headerlink" title="Kafka"></a>Kafka</h2>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/05/04/NoSql/" rel="prev" title="NoSql">
+                  <i class="fa fa-angle-left"></i> NoSql
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/05/07/MySql/" rel="next" title="MySql">
+                  MySql <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">JTRAINBOW</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

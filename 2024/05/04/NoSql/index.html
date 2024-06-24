@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"jtrainbow.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="NoSQL是非关系型数据库，与关系型数据库相比，它们不保证关系数据的ACID特性，但在在大数据、高并发等场景下，NoSQL数据库展现了其独特的优势。 NoSQL数据库主要分为以下四种类型：键值存储数据库、列存储数据库、文档型数据库和图形数据库。  键值存储数据库：数据以键值对的形式存储，通过哈希函数实现键到值的映射，查询数据时，基于键的哈希值可以直接定位到数据所在的位置，实现快速查询，并支持海量数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NoSql">
+<meta property="og:url" content="https://jtrainbow.github.io/2024/05/04/NoSql/index.html">
+<meta property="og:site_name" content="JTRAINBOWの博客">
+<meta property="og:description" content="NoSQL是非关系型数据库，与关系型数据库相比，它们不保证关系数据的ACID特性，但在在大数据、高并发等场景下，NoSQL数据库展现了其独特的优势。 NoSQL数据库主要分为以下四种类型：键值存储数据库、列存储数据库、文档型数据库和图形数据库。  键值存储数据库：数据以键值对的形式存储，通过哈希函数实现键到值的映射，查询数据时，基于键的哈希值可以直接定位到数据所在的位置，实现快速查询，并支持海量数">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-05-04T13:58:52.654Z">
+<meta property="article:modified_time" content="2024-05-07T13:14:13.031Z">
+<meta property="article:author" content="JTRAINBOW">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://jtrainbow.github.io/2024/05/04/NoSql/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://jtrainbow.github.io/2024/05/04/NoSql/","path":"2024/05/04/NoSql/","title":"NoSql"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>NoSql | JTRAINBOWの博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">JTRAINBOWの博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis"><span class="nav-number">1.</span> <span class="nav-text">Redis</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.2.</span> <span class="nav-text">数据类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97"><span class="nav-number">1.3.</span> <span class="nav-text">消息队列</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%A2%E9%98%85-%E5%8F%91%E5%B8%83%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.3.1.</span> <span class="nav-text">订阅&#x2F;发布模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#List%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97"><span class="nav-number">1.3.2.</span> <span class="nav-text">List阻塞队列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Stream"><span class="nav-number">1.3.3.</span> <span class="nav-text">Stream</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-number">1.4.</span> <span class="nav-text">持久化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#RDB"><span class="nav-number">1.4.1.</span> <span class="nav-text">RDB</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%A7%A6%E5%8F%91%E6%96%B9%E5%BC%8F"><span class="nav-number">1.4.1.1.</span> <span class="nav-text">触发方式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="nav-number">1.4.1.2.</span> <span class="nav-text">执行流程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="nav-number">1.4.1.3.</span> <span class="nav-text">优缺点</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AOF"><span class="nav-number">1.4.2.</span> <span class="nav-text">AOF</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%A7%A6%E5%8F%91%E6%9D%A1%E4%BB%B6"><span class="nav-number">1.4.2.1.</span> <span class="nav-text">触发条件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B-1"><span class="nav-number">1.4.2.2.</span> <span class="nav-text">执行流程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BC%98%E7%BC%BA%E7%82%B9-1"><span class="nav-number">1.4.2.3.</span> <span class="nav-text">优缺点</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B7%B7%E5%90%88%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-number">1.4.3.</span> <span class="nav-text">混合持久化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%87%E6%9C%9F%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5"><span class="nav-number">1.5.</span> <span class="nav-text">过期删除策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5"><span class="nav-number">1.6.</span> <span class="nav-text">淘汰策略</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LRU"><span class="nav-number">1.6.1.</span> <span class="nav-text">LRU</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LFU"><span class="nav-number">1.6.2.</span> <span class="nav-text">LFU</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redisson"><span class="nav-number">1.7.</span> <span class="nav-text">Redisson</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%9E%E5%85%AC%E5%B9%B3%E9%94%81%E5%8E%9F%E7%90%86"><span class="nav-number">1.7.1.</span> <span class="nav-text">非公平锁原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%AC%E5%B9%B3%E9%94%81%E5%8E%9F%E7%90%86"><span class="nav-number">1.7.2.</span> <span class="nav-text">公平锁原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%8E%A5%E5%8F%A3"><span class="nav-number">1.7.3.</span> <span class="nav-text">核心接口</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis%E9%9B%86%E7%BE%A4"><span class="nav-number">1.8.</span> <span class="nav-text">Redis集群</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CAP%E5%8E%9F%E5%88%99"><span class="nav-number">1.8.1.</span> <span class="nav-text">CAP原则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6"><span class="nav-number">1.8.2.</span> <span class="nav-text">主从复制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.8.3.</span> <span class="nav-text">哨兵模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E7%89%87%E9%9B%86%E7%BE%A4"><span class="nav-number">1.8.4.</span> <span class="nav-text">分片集群</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE"><span class="nav-number">1.9.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98"><span class="nav-number">1.10.</span> <span class="nav-text">常见问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Memcached"><span class="nav-number">2.</span> <span class="nav-text">Memcached</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MongoDB"><span class="nav-number">3.</span> <span class="nav-text">MongoDB</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Elasticsearch"><span class="nav-number">4.</span> <span class="nav-text">Elasticsearch</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">JTRAINBOW</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://jtrainbow.github.io/2024/05/04/NoSql/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="JTRAINBOW">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JTRAINBOWの博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="NoSql | JTRAINBOWの博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          NoSql
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-05-04 21:58:52" itemprop="dateCreated datePublished" datetime="2024-05-04T21:58:52+08:00">2024-05-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-05-07 21:14:13" itemprop="dateModified" datetime="2024-05-07T21:14:13+08:00">2024-05-07</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>NoSQL是非关系型数据库，与关系型数据库相比，它们不保证关系数据的ACID特性，但在在大数据、高并发等场景下，NoSQL数据库展现了其独特的优势。</p>
+<p>NoSQL数据库主要分为以下四种类型：键值存储数据库、列存储数据库、文档型数据库和图形数据库。</p>
+<ol>
+<li>键值存储数据库：数据以键值对的形式存储，通过哈希函数实现键到值的映射，查询数据时，基于键的哈希值可以直接定位到数据所在的位置，实现快速查询，并支持海量数据的高并发查询。<ul>
+<li>Redis、Memcached</li>
+</ul>
+</li>
+<li>文档型数据库：数据以文档的形式存储和管理，文档是结构化的数据，通常以JSON格式存储，文档存储不要求所有文档都具有相同的结构，提供很大的灵活性。<ul>
+<li>MongoDB、ElasticSearch</li>
+</ul>
+</li>
+<li>列存储数据库：数据以列为单位进行存储，这种结构的优点在于查找速度快、可扩展性强，容易进行分布式扩展。<ul>
+<li>HBase、HadoopDB、BigTable</li>
+</ul>
+</li>
+<li>图形数据库：图形数据库以图论为基础，使用图作为数据模型来存储数据，适合于存储大量复杂、互连接、低结构化的图结构数据。<ul>
+<li>Neo4J、OrientDB、InfoGrid</li>
+</ul>
+</li>
+</ol>
+<h2 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h2><p>Redis是一个高性能的key-value分布式内存数据库，它的特点是把数据放在内存中操作，处理速度相对于磁盘I&#x2F;O提高了好几个量级，通过把常用数据缓存在内存，不但可以缓解关系数据库（Mysql、Oracle）的压力，还可以提高数据访问的速度。</p>
+<h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><ol>
+<li><p>Redis是单线程模型，指的是网络IO和键值对读写及其顺序都是由一个主线程完成，持久化、异步删除、集群数据同步等功能还是由其他线程执行</p>
+<ul>
+<li>单线程保证线程安全并省去了切换线程上下文的资源开销</li>
+<li>基于内存，纯内存IO速度非常快</li>
+<li>数据结构基于散列表，CURD操作的时间复杂度是O(1)</li>
+<li>IO多路复用+epoll函数，在单个线程中跟踪记录每一个Socket的状态来管理多个IO流，从而提高吞吐能力<ul>
+<li>Redis的瓶颈在于内存（读写和容量）和网络IO，网络IO在操作系统层面是指内核态和用户态之间进行数据交换，在应用层面是指服务端处理客户端请求的Socket</li>
+<li>客户端请求服务端时，是在服务端的Socket文件中写入文件描述符，服务端分配一个线程来监听文件句柄，当有数据时就调用对应的处理并返回响应</li>
+<li>多个客户端连接服务器时，服务端将所有的Socket对应的文件描述符注册进epoll函数，同时监听所有的文件句柄，谁有数据就调用对应的处理并返回响应</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Redis大Key问题，指单个Key对应的Value的数据量特别大，可能会导致内存使用率低下、阻塞其他操作、增加网络传输负载等性能问题</p>
+<ul>
+<li>数据分片：在单例模式下将大对象拆分成多个小对象，在集群模式下使用<code>hash tag</code>在多个实例中分散数据</li>
+<li>数据结构：使用Hash代替大的String，使用ZSet代替大的List</li>
+<li>定期压缩：使用Redis的RDB或AOF持久化功能，定期压缩数据并存储到硬盘</li>
+<li>监控预警：使用info命令或第三方工具监控Redis信息，设置预警值和触发警告后的处理</li>
+</ul>
+</li>
+<li><p>LazyFree机制用于解决在删除大Key时会造成阻塞的情况，即在删除时执行逻辑删除并立即返回结果，再由LazyFree线程完成真正的物理删除</p>
+<ul>
+<li><code>unlink Largekey</code>：命令，异步删除指定大Key</li>
+<li><code>Flushdb async</code>：命令，异步删除当前分库</li>
+<li><code>Flushall async</code>：命令，异步删除所有库</li>
+<li><code>slave-lazy-flush</code>：配置，slave节点接收完RDB文件后异步删除数据</li>
+<li><code>lazyfree-lazy-eviction</code>：配置，内存淘汰策略异步删除</li>
+<li><code>lazyfree-lazy-expire</code>：配置，数据过期机制异步删除</li>
+<li><code>lazyfree-lazy-server-del</code>：配置，内部优化异步删除，如<code>rename oldkey newkey</code>时如果<code>newkey</code>已经存在则会异步删除</li>
+</ul>
+</li>
+</ol>
+<h3 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h3><ol>
+<li><code>String</code>：最基本的数据类型，可以保存字符串或数值，用于常规字符串&#x2F;数值的存取，场景：计数器、共享session&#x2F;token、全局序列号<ul>
+<li><code>set key value</code>：设置key的value</li>
+<li><code>get key</code>：获取key的value</li>
+<li><code>del key</code>：删除key</li>
+<li><code>mset key value</code>：批量设置key的value</li>
+<li><code>mget key</code>：批量获取key的value</li>
+<li><code>strlen key</code>：获取key的value的长度</li>
+<li><code>append key newValue</code>：在key的value后拼接newValue</li>
+<li><code>incr key</code>：key的value自增1</li>
+<li><code>decr key</code>：key的value自减1</li>
+<li><code>incrby key num</code>：key的value自增num</li>
+<li><code>decrby key num</code>：key的value自减num</li>
+<li><code>getrange key index1 index2</code>：获取key的value在index1和index2之间的值，0到-1表示完整的值</li>
+<li><code>setex key seconds value</code>：设置key的value和过期时间</li>
+<li><code>setnx key value</code>：key不存则设置value并返回1，key存在则不做操作并返回0</li>
+<li><code>getset key calue</code>：设置key的新值并返回旧值</li>
+<li><code>expire key seconds</code>：设置key的过期时间</li>
+<li><code>persist key</code>：取消key的过期时间（永不过期）</li>
+</ul>
+</li>
+<li><code>List</code>：String类型的双向链表，按照插入顺序存储的有序列表，可以作为列表、栈和队列<ul>
+<li><code>lpush key value</code>：将value插入指定key的List的左侧</li>
+<li><code>rpush key value</code>：将value插入指定key的List的右侧</li>
+<li><code>lrange key index1 index2</code>：获取指定key的List中索引在index1和index2之间的值，0到-1表示集合所有值</li>
+<li><code>lpop key</code>：从指定key的List的左侧取出值</li>
+<li><code>rpop key</code>：从指定key的List的右侧取出值</li>
+<li><code>brpop key tiemout</code>：从指定key的List的右侧取出值，如果没有值则等待指定时间</li>
+<li><code>lindex key index</code>：获取指定key的List的index下标的值</li>
+<li><code>llen</code>：获取指定key的List的长度</li>
+<li><code>lset key index value</code>：更新指定key的List的index下标的值为value</li>
+<li><code>linsert key before value1 value2</code>：在指定key的List的value1前面插入value2</li>
+<li><code>linsert key after value1 value2</code>：在指定key的List的value1后面插入value2</li>
+</ul>
+</li>
+<li><code>Hash</code>：键值对的哈希表，可以在一个哈希数据结构存储多个字段和值，用于同类数据归类统计管理，如购物车功能key保存用户、field保存商品、value保存商品数量<ul>
+<li><code>hset key field value</code>：设置指定key的Hash的field和value</li>
+<li><code>hget key field</code>：获取指定key的Hash的指定field的value</li>
+<li><code>hdel key field</code>：删除指定key的Hash的指定一个或多个field</li>
+<li><code>hexists key field</code>：检查指定key的Hash是否存在指定field</li>
+<li><code>hkeys key</code>：获取指定key的Hash的所有field</li>
+<li><code>hvals key</code>：获取指定key的Hash的所有field的value</li>
+<li><code>hgetall key</code>：获取指定key的Hash的所有field和value</li>
+<li><code>hincrby key field num</code>：将指定key的Hash的指定field的value自增num</li>
+<li><code>hlen key</code>：获取指定key的Hash的字段数量</li>
+<li><code>hmset key field value</code>：设置指定key的Hash的多个field和value</li>
+<li><code>hmget key field</code>：获取指定key的Hash的指定field的value</li>
+</ul>
+</li>
+<li><code>Set</code>：无序的唯一值集合，用于计算差集、交集、并集和随机取值，如抽奖活动和朋友圈点赞<ul>
+<li><code>sadd key member</code>：向指定key的Set中添加一个或多个member，member存在则忽略</li>
+<li><code>srem key member</code>：从指定key的Set中移除一个或多个member</li>
+<li><code>sismember key member</code>：检查指定key的Set中是否存在member</li>
+<li><code>smembers key</code>：获取指定key的Set的所有member</li>
+<li><code>scard key</code>：获取指定key的Set的member数量</li>
+<li><code>spop key [count]</code>：从指定key的Set中随机移除并返回指定count数量的member</li>
+<li><code>srandmember key [count]</code>：从指定key的Set中随机获取指定count数量的member，但不移除</li>
+<li><code>sdiff key</code>：获取多个指定key的Set的差集</li>
+<li><code>sinter key</code>：获取多个指定key的Set的交集</li>
+<li><code>sunion key</code>：获取多个指定key的Set的并集</li>
+</ul>
+</li>
+<li><code>Zset</code>：有序的唯一值集合，每个值都关联一个score用于排序，用于排序计算排行榜和时间轴<ul>
+<li><code>zadd key score member</code>：向指定key的Zset中添加指定score的member</li>
+<li><code>zrem key member</code>：从指定key的Zset中移除指定member</li>
+<li><code>zscore key member</code>：获取指定key的Zset中指定member的score</li>
+<li><code>zrange key statr stop [withscores]</code>：按照分数从小到大的顺序获取指定key的Zset中索引在start和stop之间的member</li>
+<li><code>zrebrange key start stop [withscores]</code>：按照分数从大到小的顺序获取指定key的Zset中索引在start和stop之间的member</li>
+<li><code>zcrad key</code>：获取指定key的Zset中member的数量</li>
+<li><code>zcount key min max</code>：计算指定key的Zset中score在min到max之间的member数量</li>
+<li><code>zrank key member</code>：按照分数从小到大的顺序获取指定key的Zset中指定member的索引下标（排名）</li>
+<li><code>zrevrank key member</code>：按照分数从大到小的顺序获取指定key的Zset中指定member的索引下标（排名）</li>
+<li><code>zincrby key num member</code>：将指定key的Zset中指定的member的score增加num</li>
+</ul>
+</li>
+<li><code>GeoSpatial</code>：保存了地理位置的经纬度并距离计算和范围查询功能<ul>
+<li><code>geoadd key long lat city</code>：在指定key的集合中添加指定经纬度的地点</li>
+<li><code>geopos key city</code>：获取指定key的集合中指定地点的经纬度</li>
+<li><code>geodist key city1 city2</code>：计算指定key集合中两个地点的距离</li>
+<li><code>georadius key long lat distance</code>：获取指定key的集合中以指定经纬度为圆心、指定distance为半径的范围内的地点</li>
+<li><code>georadiusbymember key city distance</code>：获取指定key的集合中以指定地点为圆心、指定distance为半径的范围内的地点</li>
+</ul>
+</li>
+<li><code>HyperLogLog</code>：这种数据结构提供一种不精确的去重计数算法，能够以极小的内存开销粗略计算一个集合中不重复元素的个数（基数），如统计日活量<ul>
+<li><code>pfadd key element</code>：向指定key的HyperLogLog中添加指定元素</li>
+<li><code>pfcount key</code>：获取指定key的HyperLogLog的基数估算值</li>
+<li><code>pfmerge destkek sourcekey</code>：以并集的方式合并多个HyperLogLog为新的HyperLogLog</li>
+</ul>
+</li>
+<li><code>Bitmaps</code>：基于String类型实现的二进制位操作的位图，最大长度是512M即2^32个比特位，可以用于管理用户的登陆状态<ul>
+<li><code>setbit key offset value</code>：设置指定key位图的指定比特位的值</li>
+<li><code>getbit key offset</code>：获取指定key位图的指定比特位的值</li>
+<li><code>bitop and/or/xor/not destkey key1 [key2...]</code>：将多个位图按位操作并保存到新位图</li>
+</ul>
+</li>
+<li><code>Stream</code>：5.0版本新增的数据结构，字面上是流类型，但功能上是一个支持多播的可持久化消息队列<ul>
+<li>订阅&#x2F;发布模式只支持及时消息，无法持久化，出现客户端网络断开或Redis宕机时消息就会丢失</li>
+<li>基于<code>List+lpush+brpop</code>的消息队列支持了持久化，但是不支持多播、分组消费</li>
+</ul>
+</li>
+</ol>
+<h3 id="消息队列"><a href="#消息队列" class="headerlink" title="消息队列"></a>消息队列</h3><h4 id="订阅-发布模式"><a href="#订阅-发布模式" class="headerlink" title="订阅&#x2F;发布模式"></a>订阅&#x2F;发布模式</h4><h4 id="List阻塞队列"><a href="#List阻塞队列" class="headerlink" title="List阻塞队列"></a>List阻塞队列</h4><h4 id="Stream"><a href="#Stream" class="headerlink" title="Stream"></a>Stream</h4><h3 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h3><p>Redis的数据是存放在内存中的，内存本身在服务关闭、进程推出或突发断电的情况下会丢失所有数据，所以Redis也支持内存数据持久化到硬盘。</p>
+<h4 id="RDB"><a href="#RDB" class="headerlink" title="RDB"></a>RDB</h4><p>RDB（Redis DataBase）是redis默认的快照持久化方式，可以通过命令手动触发或通过配置自动触发。</p>
+<h5 id="触发方式"><a href="#触发方式" class="headerlink" title="触发方式"></a>触发方式</h5><ol>
+<li>手动触发<ul>
+<li><code>save</code>：由主线程完成持久化，持久化过程中会阻塞其他请求</li>
+<li><code>bgsave</code>：主线程fork子线程后继续响应其他请求，由子线程完成持久化，主线程只在fork过程中阻塞</li>
+</ul>
+</li>
+<li>自动触发：配置文件中设置<code>save m n</code><ul>
+<li>该配置会在m秒内至少修改了n次数据后自动触发子线程持久化</li>
+<li>redis通过默认100ms执行一次的周期性函数<code>serverCron</code>维护服务器的状态，其中一项是检查是否需要自动持久化</li>
+<li><code>dirty</code>计数器记录了上一次持久化后数据的修改次数，<code>lastsave</code>记录了上一次持久化的时间戳，当<code>now - lastsave &gt; m &amp;&amp; dirty &gt; n</code>时就会执行持久化操作</li>
+</ul>
+</li>
+</ol>
+<h5 id="执行流程"><a href="#执行流程" class="headerlink" title="执行流程"></a>执行流程</h5><ol>
+<li>主线程判断当前是否已经在执行持久化操作，如果正在持久化则直接结束，否则开始持久化</li>
+<li>主线程fork一个子线程并阻塞所有请求，fork结束的同时与子线程共享当前的内存数据快照并继续处理客户端请求，通过操作系统的写时复制机制从快照中复制需要修改的数据的page并修改数据</li>
+<li>子线程遍历内存快照的数据并序列化到临时文件，完成后原子替换RDB持久化文件</li>
+<li>子线程通知主线程持久化完成，主线程更新统计信息</li>
+<li>Redis重启时，读取RDB文件并将数据加载到内存</li>
+</ol>
+<h5 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h5><ol>
+<li>优点：RDB文件是经过压缩的二进制文件，保存了Redis某一时刻的内存数据，适合设定指定时间对Redis进行归档备份，在数据量比较大时，Redis启动从RDB文件恢复数据到内存的速度比较快。</li>
+<li>缺点：RDB持久化容易造成数据丢失，如果Redis出现故障，会丢失最后一次持久化到发生故障期间的数据，另外主线程fork子线程时也会阻塞其他请求。</li>
+</ol>
+<h4 id="AOF"><a href="#AOF" class="headerlink" title="AOF"></a>AOF</h4><p>AOF（Append Of File）以日志的形式在内存缓冲区顺序记录了Redis的所有修改内存的指令，当缓冲区满了再写入磁盘。</p>
+<h5 id="触发条件"><a href="#触发条件" class="headerlink" title="触发条件"></a>触发条件</h5><ol>
+<li>缓冲区刷新策略：<code>appendfsync always/everyesc/no</code><ul>
+<li><code>fsync()</code>：将指定文件的内容从内存缓存刷到硬盘中</li>
+<li><code>always</code>：每执行一条写操作指令，就调用一次<code>fsync()</code></li>
+<li><code>everyesc</code>：默认，每个一秒调用一次<code>fsync()</code></li>
+<li><code>no</code>：不主动调用<code>fsync()</code>，由操作系统自行决定刷新缓冲区到磁盘的时机</li>
+</ul>
+</li>
+<li>重写AOF文件：AOF文件在Redis允许过程中会越来越大，可以通过重写机制减小AOF文件容量<ul>
+<li><code>bgrewriteaof</code>：手动重写AOF文件</li>
+<li><code>auto-aof-rewrite-percentage 100</code>：自动触发重写的百分比，0表示关闭自动重写</li>
+<li><code>auto-aof-rewrite-min-size 64mb</code>：AOF文件超过64MB自动触发重写</li>
+</ul>
+</li>
+</ol>
+<h5 id="执行流程-1"><a href="#执行流程-1" class="headerlink" title="执行流程"></a>执行流程</h5><ol>
+<li>客户端请求中的写操作指令被追加到缓冲区</li>
+<li>缓冲区根据刷新策略将数据从内存同步到磁盘的AOF文件</li>
+<li>AOF文件大小超过重写策略或手动重写时，重写AOF文件，压缩AOF容量</li>
+<li>Redis重启时，执行AOF文件的指令将数据加载到内存</li>
+</ol>
+<h5 id="优缺点-1"><a href="#优缺点-1" class="headerlink" title="优缺点"></a>优缺点</h5><ol>
+<li>优点：AOF文件是可读的日志文本文件，持久化内存数据的时间间隔短，备份机制更稳健，丢失数据的概率更低、更能接受</li>
+<li>缺点：容易占用磁盘空间，在数据量比较大时通过重新执行写指令恢复数据的速度比较慢，每隔一秒刷新缓冲区有一定的性能压力</li>
+</ol>
+<h4 id="混合持久化"><a href="#混合持久化" class="headerlink" title="混合持久化"></a>混合持久化</h4><p>通过RDB文件恢复数据，可能会丢失大量数据；通过AOF文件恢复数据，恢复性能较慢导致启动Redis更费时，因此在4.0版本之后，Redis支持了混合持久化，通过配置<code>aof-use-rdb-preamble</code>参数开启。</p>
+<ol>
+<li>正常使用RDB方式持久化，但持久化到磁盘时是保存在AOF文件中</li>
+<li>在RDB持久化的间隔，使用AOF持久化</li>
+</ol>
+<h3 id="过期删除策略"><a href="#过期删除策略" class="headerlink" title="过期删除策略"></a>过期删除策略</h3><p>通常在设置Redis缓存时需要指定缓存的过期时间，从而保证缓存数据只在设定的时间内有效，通过这个特性可以实现很多功能，而当缓存过期时需要通过一些策略删除过期缓存。</p>
+<ol>
+<li>惰性删除：不主动删除过期缓存，而是在获取缓存时判断是否过期，过期则删除并返回null<ul>
+<li>优点：只在访问时删除过期缓存，节省了CPU资源</li>
+<li>缺点：不能及时删除过期缓存，浪费了内存资源</li>
+</ul>
+</li>
+<li>定时删除：在设置缓存的过期时间时创建一个定时器，当缓存过期时由定时器立即删除缓存<ul>
+<li>优点：及时删除过期缓存，节省了内存资源</li>
+<li>缺点：定时器占用了CPU资源</li>
+</ul>
+</li>
+<li>定期删除：每个一段时间从设置过期时间的缓存中随机抽取20个，如果过期则删除，当删除比例超过25%时继续随机抽取20个缓存，直到删除比例小于25%<ul>
+<li><code>hz</code>：配置，默认10，表示1秒检测10次</li>
+<li><code>maxmemory</code>：配置，最大可使用的物理内存，超过时会触发淘汰策略</li>
+</ul>
+</li>
+</ol>
+<h3 id="淘汰策略"><a href="#淘汰策略" class="headerlink" title="淘汰策略"></a>淘汰策略</h3><p>当Redis内存超出<code>maxmemory</code>限制时，会根据<code>maxmemory-policy</code>淘汰策略移除一些缓存。</p>
+<ol>
+<li><code>noeviction</code>：不进行淘汰，当内存不足时，新写入命令会报错</li>
+<li><code>allkeys-lru</code>：根据LRU算法移除缓存</li>
+<li><code>volatile-lru</code>：只对设置了过期时间的缓存进行LRU算法移除</li>
+<li><code>allkeys-random</code>：随机移除缓存</li>
+<li><code>volatile-random</code>：随机移除设置了过期时间的缓存</li>
+<li><code>volatile-ttl</code>：移除即将过期的缓存</li>
+<li><code>allkeys-lfu</code>：根据LFU算法移除缓存</li>
+<li><code>volatile-lfu</code>：只对设置了过期时间的缓存进行LFU算法移除</li>
+</ol>
+<h4 id="LRU"><a href="#LRU" class="headerlink" title="LRU"></a>LRU</h4><p>LRU（Least Recently Used）表示最近很少使用&#x2F;最久没有使用，即当内存不足时，为了保证新数据写入内存，需要移除内存中最久没有使用的旧数据。</p>
+<h4 id="LFU"><a href="#LFU" class="headerlink" title="LFU"></a>LFU</h4><p>LFU（Least Frequently Used）表示最近最少使用，即当内存不足时，为了保证新数据写入内存，需要移除内存中访问频率最少的旧数据。</p>
+<h3 id="Redisson"><a href="#Redisson" class="headerlink" title="Redisson"></a>Redisson</h3><p>Redisson是基于Redis的Java客户端类库，它提供了对Redis的高级封装和抽象，如分布式数据结构、异步和响应式编程模型、Redis连接池管理、监控等众多功能，大大简化了Java应用程序使用Redis的流程。</p>
+<ol>
+<li><code>Jedis</code>：Redis官方推出的客户端，提供了各种基础命令的支持。</li>
+<li><code>Lettuce</code>：基于Netty异步通讯框架的可扩展、线程安全的客户端，支持更高级的Redis特性，如哨兵、集群、管道、自动重连等。</li>
+<li><code>Redisson</code>：基于Netty异步通讯框架的分布式客户端，支持分布式锁（自动释放、自动续期）。</li>
+</ol>
+<h4 id="非公平锁原理"><a href="#非公平锁原理" class="headerlink" title="非公平锁原理"></a>非公平锁原理</h4><p>Redisson通过Lua脚本保证缓存操作的原子性，使用Hash数据类型实现非公平锁。</p>
+<p>假设线程A、B竞争锁，A获取锁，B未获取锁，以下为代码逻辑：</p>
+<ol>
+<li>A加锁，通过哈希算法选择节点，执行Lua脚本向redis服务端写入Hash类型的缓存并返回锁剩余过期时间，如果缓存没有过期则设置<code>Watch Dog</code>自动续期<ul>
+<li><code>key</code>：自定义的key，也就是锁</li>
+<li><code>field</code>：获取锁的线程的id</li>
+<li><code>value</code>：线程获取锁的次数</li>
+<li><code>Watch Dog</code>：每隔十秒检查是否持有锁，是则自动为锁续期，默认增加30秒锁的缓存的过期时间</li>
+</ul>
+</li>
+<li>B未获取锁，开始检查等待时间，等待超时则返回加锁失败，否则基于信号量订阅锁的解锁广播消息</li>
+<li>B再次尝试获取锁但加锁失败，未等待超时则调用信号量的<code>tryAcquire()</code>阻塞住，直到等待超时取消订阅释放信号量</li>
+<li>A操作完成释放锁，发布解锁的广播消息</li>
+<li>B收到订阅消息通知被唤醒，未等待超时则回到第二步继续竞争锁</li>
+<li>B获取到锁，取消订阅释放信号量，业务操作完成后释放锁</li>
+</ol>
+<h4 id="公平锁原理"><a href="#公平锁原理" class="headerlink" title="公平锁原理"></a>公平锁原理</h4><p>Redisson通过Lua脚本保证缓存操作的原子性，使用Hash、List和Zset数据类型实现公平锁。</p>
+<p>其中Hash保存获取的线程，key为自定义锁，field为线程id，value为获取锁的次数，List作为IFIO线程等待队列保存竞争锁的线程，key为redisson_lock_queue+自定义的锁，value是线程id；Zset作为超时集合记录线程超时时间，key为redisson_lock_timeout+自定义的锁，score为线程超时时间，member为线程id。</p>
+<p>以下为Lua脚本获取锁或排队逻辑：</p>
+<ol>
+<li>循环清除等待超时的线程<ul>
+<li>获取List队列头节点线程，如果没有则跳出循环</li>
+<li>如果有头节点线程，从Zset中获取头节点线程的超时时间，如果超时时间大于当前时间则跳出循环</li>
+<li>否则从List和Zset中移除该线程，进入下一轮循环</li>
+</ul>
+</li>
+<li>当前线程首次加锁，如果锁不存在 &amp;&amp; （不存在线程等待队列 || 存在线程等待队列并且头节点就是当前线程）<ul>
+<li>取出List头节点线程、删除Zset中的头节点线程</li>
+<li>遍历Zset所有member的score，都减去当前时间</li>
+<li>在Hash中设置锁、当前线程id、获取次数、过期时间</li>
+<li>返回nil</li>
+</ul>
+</li>
+<li>线程A重入判断<ul>
+<li>如果Hash中已经存在线程A，value自增1并重设过期时间</li>
+<li>返回nil</li>
+</ul>
+</li>
+<li>如果无法获取锁，检查线程B是否已经在Zset中<ul>
+<li>获取线程B的超时时间，如果存在，直接返回线程B的剩余等待时间</li>
+<li>不存在则进入下一步</li>
+</ul>
+</li>
+<li>当前线程加入对尾<ul>
+<li>计算ttl：如果List尾节点存在并且不是当前线程，ttl&#x3D;尾节点线程的score-当前时间，否则ttl&#x3D;锁的剩余存活时间</li>
+<li>计算当前线程的score&#x3D;ttl+当前线程超时时间+当前时间</li>
+<li>当前线程加入Zset和List队尾</li>
+</ul>
+</li>
+</ol>
+<h4 id="核心接口"><a href="#核心接口" class="headerlink" title="核心接口"></a>核心接口</h4><ol>
+<li><code>RLock</code>：分布式锁核心接口，继承了<code>j.u.c.Lock</code>接口和自己的<code>RLockAsync</code>接口<ul>
+<li><code>tryAcquireOnceAsync()</code>：加锁，通过<code>eval</code>命令执行<code>Lua</code>脚本，向redis服务端写入锁<ul>
+<li>加锁成功流程：如果锁不存在，为当前线程增加锁并计数1；如果锁存在并且是同一线程，计数+1；设置失效时间并返回剩余时间</li>
+<li>加锁失败流程：如果锁存在且不是同一线程，当前线程订阅锁删除的广播消息然后进入阻塞状态，直到解锁广播唤醒或等待超时取消订阅</li>
+</ul>
+</li>
+<li><code>unlockInnerAsync</code>: 解锁，通过<code>eval</code>命令执行<code>Lua</code>脚本，向redis服务端移除锁<ul>
+<li>流程：如果锁不存在直接返回；如果锁存在并且是同一线程，计数-1；如果计数大于0，重设失效时间；如果计数等于0，删除锁并发布解锁消息</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>RLockAsync</code>：实现异步的核心，接口返回类型都是<code>RFuture</code>，<ul>
+<li><code>RFuture</code>：实现了<code>j.u.c.Future</code>和<code>j.u.c.CompletionStage</code>接口<ul>
+<li><code>onComplete()</code>：异步任务完成后的回调，基于Netty监听器事件驱动</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>信号量：<code>RFuture&lt;RedissonLockEntry&gt;</code>类型，包含了一个<code>j.u.c.Semaphore</code></li>
+<li><code>LockPubSub</code>：锁订阅发布功能，继承自<code>PublishSubscribe</code>，有一个<code>OnMessage()</code>用于监听消息，执行监听回调和释放信号量</li>
+<li><code>PublishSubscribe</code>：管理订阅和信号量<ul>
+<li><code>subscribe()</code>：订阅</li>
+<li><code>unsubscribe()</code>：取消订阅并释放信号量</li>
+<li><code>PublishSubscribeService</code>：管理了一个<code>AsyncSemaphore</code>数组<ul>
+<li>根据<code>redisson_lock__channel_ + &#123; + key + &#125;</code>的哈希值绝对值对数组长度取模确定信号量位置</li>
+<li><code>AsyncSemaphore</code>：基于<code>AtomicInteger + CountDownLatch + Runnable</code>实现的异步信号量</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="Redis集群"><a href="#Redis集群" class="headerlink" title="Redis集群"></a>Redis集群</h3><p>单节点Redis的并发能力是有限的，要进一步提高Redis的并发能力，就需要搭建分布式集群。</p>
+<h4 id="CAP原则"><a href="#CAP原则" class="headerlink" title="CAP原则"></a>CAP原则</h4><ol>
+<li>概念：CAP原则是分布式存储的理论基础，它指出在分布式系统中一致性、可用性、分区容忍度只能满足两个，另一个必须牺牲。<ul>
+<li>C：<code>Consistent</code>，强一致性，所有节点在同一时刻的数据是相同的</li>
+<li>A：<code>Availability</code>，高可用性，系统的服务一直可用，用于用户的请求处理不管成功还是失败都可以及时响应</li>
+<li>P：<code>Partition Tolerance</code>，分区容错性，遇到节点之间网络断开的情况（网络分区）仍然可以响应用户请求</li>
+</ul>
+</li>
+<li>策略<ul>
+<li>CA（单点系统）：牺牲分区容错性，保证一致性和可用性，相当于放弃分布式</li>
+<li>CP（支付系统）：牺牲可用性，保证一致性和分区容错性，降低用户体验，直到故障节点再次可用时才响应请求</li>
+<li>AP（内容系统、商场系统）：牺牲一致性，保证可用性和分区容错性，即使各个节点数据暂时不一致也能立即响应用户</li>
+</ul>
+</li>
+</ol>
+<p>分布式系统的节点往往都是分布在不同网络的机器上的，这意味着必然会有网络断开的风险（网络分区），因此通常会保证分区容错性，再从一致性和可用性中选择牺牲一个。</p>
+<h4 id="主从复制"><a href="#主从复制" class="headerlink" title="主从复制"></a>主从复制</h4><ol>
+<li>概念：一个主机负责写操作，多个从机负责读操作和数据备份</li>
+<li>配置：正常配置，但从机需要增加<code>replicaof/saveof &lt;masterip&gt; &lt;masterport&gt;</code>和<code>masterauth &lt;master-password&gt;</code>等配置</li>
+<li>同步流程：<ul>
+<li>从机执行<code>replicaof</code>命令建立与主机的连接，并发送<code>replid</code>和<code>offset</code>请求数据同步</li>
+<li>主机根据<code>replid</code>判断是否是第一次同步，是第一次则先返回<code>replid</code>信息给从机保存<ul>
+<li>主机执行<code>bgsave</code>命令，生成RDB文件并发送给从机，从机清空本地数据并加载主机的RDB文件</li>
+<li>主机在<code>repl_baklog</code>中记录RDB期间的所有命令并发送给从机，从机执行接收到的命令</li>
+</ul>
+</li>
+<li>非第一次同步，主机只发送<code>repl_baklog</code>中的命令给从机<ul>
+<li>根据主从<code>offset</code>在命令中的偏移量判断从机数据是否落后于主机，落后则同步数据</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="哨兵模式"><a href="#哨兵模式" class="headerlink" title="哨兵模式"></a>哨兵模式</h4><ol>
+<li>概念：在主从复制模式基础上增加了节点状态监控、主节点发生故障后自动从机选主和主从切换</li>
+<li>配置：先按照主从模式配置，在单独配置奇数个哨兵配置（sentinel.conf）<ul>
+<li><code>sentinel monitor mastername masterip masterport sentinelnum</code>：<ul>
+<li><code>mastername</code>：设置主机名称</li>
+<li><code>masterip</code>：主机IP</li>
+<li><code>masterport</code>：主机端口</li>
+<li><code>sentinelnum</code>：设置最少几个哨兵认为主机不可用时自动进行故障转移</li>
+</ul>
+</li>
+<li><code>sentinel down-after-milliseconds mymaster num</code>：服务器超过num毫秒未响应则认为不可用</li>
+<li><code>sentinel parallel-syncs mymaster num</code>：在故障转移期间可以有num个从机同时进行同步</li>
+<li><code>sentinel failover-timeout mymaster num</code>：如果故障转移超过num毫秒则认为故障转移失败</li>
+<li><code>redis-sentinel sentinel.conf</code>：按照配置启动哨兵</li>
+</ul>
+</li>
+<li>心跳检测<ul>
+<li>每个哨兵节点每隔10s向主从节点发送info命令更新主从结构</li>
+<li>每个哨兵节点每隔2s发布自身信息和对主节点的判断，其他哨兵订阅该信息</li>
+<li>每个哨兵节点每个1s向主从节点发送ping命令来判断主从节点是否可用</li>
+</ul>
+</li>
+<li>选举机制<ul>
+<li>主机下线：哨兵认为主节点不可用<ul>
+<li>主观下线：一个哨兵检测到主节点不可用，不做操作，正常发布自身信息和对主节点的判断</li>
+<li>客观下线：达到配置数量的哨兵检测到主节点不可用，在可用的从节点中选举一个切换成节点，哨兵根据发布订阅模式更新信息</li>
+</ul>
+</li>
+<li>leader选举：<ul>
+<li>每个哨兵可以要求其他哨兵选择自己，先到先得</li>
+<li>超过一半的哨兵选择了某个哨兵时，这个哨兵作为leader进行故障转移</li>
+</ul>
+</li>
+<li>节点选举：leader哨兵选择某个从节点切换成主节点<ul>
+<li>选择在线的节点</li>
+<li>选择响应速度最快的节点</li>
+<li>选择与主节点断开时间最短的</li>
+<li>选择<code>offset</code>偏移量最大的</li>
+<li>选择<code>runid</code>最大的</li>
+</ul>
+</li>
+<li>主从切换：<ul>
+<li>从节点执行<code>saveod no noe</code>命令切换成新主节点</li>
+<li>其他从节点和原主节点通过<code>saveof newmaster</code>命令变成新主节点的从节点</li>
+<li>通知客户端新的主节点地址</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>脑裂：当主节点和哨兵发生网络分区时，哨兵的心跳检测没有感知到主节点，从而选举了新的主节点<ul>
+<li>问题：客户端还是在原主节点执行写操作，新主节点无法同步数据，网络恢复后，原主节点变成新主节点的从节点，导致数据丢失</li>
+<li>解决：通过配置让原主节点无法写入数据，但会导致客户端请求失败<ul>
+<li><code>min-slaves-to-write num</code>：主节点至少有num个可用的从节点才能执行写操作</li>
+<li><code>min-slaves-max-lag num</code>：主从复制时延迟时间超过num秒就不能执行写操作</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="分片集群"><a href="#分片集群" class="headerlink" title="分片集群"></a>分片集群</h4><ol>
+<li>概念：多个主机负责写操作，多个从机负责读操作和数据备份，每个主机保存不同的数据</li>
+<li>优点：主从复制、哨兵模式可以解决高可用、高并发读问题，而分片集群还可以解决海量数据存储和高并发写问题</li>
+<li>配置：开启集群功能<code>cluster-enabled yes</code>、<code>replica-announce-ip masterip</code><ul>
+<li><code>redis-cli -a pwd --cluster create/add-node/del-node --cluster-replicas num masterip1:port1  [masterip2:port2...]</code><ul>
+<li><code>-a</code>：密码</li>
+<li><code>--cluster</code>：集群模式</li>
+<li><code>create</code>：创建集群</li>
+<li><code>add-node</code>：添加集群节点</li>
+<li><code>del-node</code>：删除集群节点（移哈希槽-&gt;删除从节点-&gt;删除主节点）</li>
+<li><code>--cluster-replicas num</code>：为主节点分配num个从节点</li>
+<li><code>--cluster-slave --cluster-master-id id</code>：为主节点分配从节点</li>
+</ul>
+</li>
+<li>每个master可以通过PING命令彼此进行心跳检测</li>
+</ul>
+</li>
+<li>数据读写<ul>
+<li><code>hash slot</code>：Redis集群内置了2^14（16384）个哈希槽，需要事先为集群主节点分配<ul>
+<li>计算key的哈希值并对16384取模，value保存在余数对应的主节点</li>
+<li>只计算key第一个<code>&#123;</code>和第一个<code>&#125;</code>之间的部分，没有才计算整个key</li>
+</ul>
+</li>
+<li>分配哈希槽：<ul>
+<li><code>redis-cli --cluster reshard ip:port</code></li>
+<li><code>redis-cli --cluster reshard ip:port --cluster-from id1 --cluster-to id2 --cluster-slots num</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/Rambo_Yang/article/details/128584227">https://blog.csdn.net/Rambo_Yang/article/details/128584227</a></p>
+<h3 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h3><ol>
+<li>缓存穿透<ul>
+<li>问题：查询的key在缓存和数据库中都不存在，导致每次查询都穿透缓存到达数据库，从而可能压垮数据库</li>
+<li>解决：提前存入一定存在的数据到布隆过滤器，后续新增的数据也存入</li>
+<li>布隆过滤器：基于位数据（Bit Array）和一组哈希函数构成的数据结构，能快速判断一个元素是否存在于集合中<ul>
+<li>位数据初始全为0，key经过哈希函数计算出位数组索引并将对应位置1，查询时对应位全为1表示key存在</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>缓存雪崩<ul>
+<li>问题：当缓存服务器重启或者大量缓存集中在某一个时间段失效，此时大量请求正好要用到失效缓存，导致请求全部到达数据库</li>
+<li>解决：多级缓存、限流、过期时间增加随机值保证离散</li>
+</ul>
+</li>
+<li>缓存击穿<ul>
+<li>问题：某一热点数据失效，此时大量请求正好要用到失效缓存，导致请求全部到达数据库</li>
+<li>解决：多级缓存、限流、使用锁机制保证只有一个请求到达数据库，其他请求直接返回或等待缓存数据</li>
+</ul>
+</li>
+<li>双写一致性<ul>
+<li>问题：数据库和缓存数据不一致</li>
+<li>解决：先删除缓存，再保证数据库操作成功，最后短暂延迟再删除缓存；MYSQL检测binlog将消息推送到Redis保证缓存更新成功；业务更新后通过MQ发送消息保证消费消息更新到Redis</li>
+</ul>
+</li>
+<li>big key<ul>
+<li>问题：大key导致内存分布不均匀、操作大key会阻塞其他请求、增加网络负载</li>
+<li>解决：数据拆分</li>
+</ul>
+</li>
+<li>增加命中率：提前缓存热点数据、增加缓存空间的数据量</li>
+</ol>
+<h2 id="Memcached"><a href="#Memcached" class="headerlink" title="Memcached"></a>Memcached</h2><h2 id="MongoDB"><a href="#MongoDB" class="headerlink" title="MongoDB"></a>MongoDB</h2><h2 id="Elasticsearch"><a href="#Elasticsearch" class="headerlink" title="Elasticsearch"></a>Elasticsearch</h2>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/04/28/ORM/" rel="prev" title="ORM">
+                  <i class="fa fa-angle-left"></i> ORM
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/05/06/MQ/" rel="next" title="MQ">
+                  MQ <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">JTRAINBOW</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

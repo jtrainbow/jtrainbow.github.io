@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"jtrainbow.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Mysql是一个开源、成熟的关系型数据库（RDB，Relational Database），主要用于存储持久化数据。 架构MySql可以分为服务层和数据层，服务层负责处理查询解析、分析优化、缓存和客户端交互，数据层负责数据存储和读取。  连接器：管理客户端连接，用于身份认证和权限验证 查询缓存：执行查询语句时，优先从缓存中检索，如果检索到数据则直接返回否则去存储引擎中查询数据并缓存，MySql8后">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySql">
+<meta property="og:url" content="https://jtrainbow.github.io/2024/05/07/MySql/index.html">
+<meta property="og:site_name" content="JTRAINBOWの博客">
+<meta property="og:description" content="Mysql是一个开源、成熟的关系型数据库（RDB，Relational Database），主要用于存储持久化数据。 架构MySql可以分为服务层和数据层，服务层负责处理查询解析、分析优化、缓存和客户端交互，数据层负责数据存储和读取。  连接器：管理客户端连接，用于身份认证和权限验证 查询缓存：执行查询语句时，优先从缓存中检索，如果检索到数据则直接返回否则去存储引擎中查询数据并缓存，MySql8后">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-05-06T23:58:23.462Z">
+<meta property="article:modified_time" content="2024-05-28T18:46:49.093Z">
+<meta property="article:author" content="JTRAINBOW">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://jtrainbow.github.io/2024/05/07/MySql/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://jtrainbow.github.io/2024/05/07/MySql/","path":"2024/05/07/MySql/","title":"MySql"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>MySql | JTRAINBOWの博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">JTRAINBOWの博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%B6%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SQL%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">SQL执行流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95"><span class="nav-number">3.</span> <span class="nav-text">索引</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95%E7%B1%BB%E5%9E%8B"><span class="nav-number">3.1.</span> <span class="nav-text">索引类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95%E4%BC%98%E5%8C%96"><span class="nav-number">3.2.</span> <span class="nav-text">索引优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E"><span class="nav-number">4.</span> <span class="nav-text">存储引擎</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#InnoDB%E6%9E%B6%E6%9E%84"><span class="nav-number">5.</span> <span class="nav-text">InnoDB架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E7%BB%93%E6%9E%84"><span class="nav-number">5.1.</span> <span class="nav-text">内存结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E7%BB%93%E6%9E%84"><span class="nav-number">5.2.</span> <span class="nav-text">磁盘结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%84%E6%88%90"><span class="nav-number">5.2.1.</span> <span class="nav-text">构成</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A1%A8%E7%A9%BA%E9%97%B4%E7%BB%93%E6%9E%84"><span class="nav-number">5.2.2.</span> <span class="nav-text">表空间结构</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mysql%E6%97%A5%E5%BF%97"><span class="nav-number">6.</span> <span class="nav-text">Mysql日志</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#redo-log"><span class="nav-number">6.1.</span> <span class="nav-text">redo log</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#binlog"><span class="nav-number">6.2.</span> <span class="nav-text">binlog</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undo-log"><span class="nav-number">6.3.</span> <span class="nav-text">undo log</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1"><span class="nav-number">7.</span> <span class="nav-text">事务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1-1"><span class="nav-number">7.1.</span> <span class="nav-text">事务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ACID"><span class="nav-number">7.2.</span> <span class="nav-text">ACID</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9A%94%E7%A6%BB%E6%80%A7%E9%97%AE%E9%A2%98"><span class="nav-number">7.3.</span> <span class="nav-text">隔离性问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB"><span class="nav-number">7.4.</span> <span class="nav-text">隔离级别</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MySql%E9%94%81%E6%9C%BA%E5%88%B6"><span class="nav-number">8.</span> <span class="nav-text">MySql锁机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MyISAM"><span class="nav-number">8.1.</span> <span class="nav-text">MyISAM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#InnoDB"><span class="nav-number">8.2.</span> <span class="nav-text">InnoDB</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MVCC"><span class="nav-number">9.</span> <span class="nav-text">MVCC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">9.1.</span> <span class="nav-text">工作流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="nav-number">10.</span> <span class="nav-text">实现原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%85%A2%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96"><span class="nav-number">11.</span> <span class="nav-text">慢查询优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E8%A7%84%E8%8C%83-%E4%BC%98%E5%8C%96"><span class="nav-number">12.</span> <span class="nav-text">设计规范&#x2F;优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4"><span class="nav-number">13.</span> <span class="nav-text">集群</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88"><span class="nav-number">13.1.</span> <span class="nav-text">集群方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4%E5%90%8C%E6%AD%A5"><span class="nav-number">13.2.</span> <span class="nav-text">集群同步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8"><span class="nav-number">13.3.</span> <span class="nav-text">分库分表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB"><span class="nav-number">13.4.</span> <span class="nav-text">读写分离</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sharding-JDBC"><span class="nav-number">13.5.</span> <span class="nav-text">Sharding JDBC</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE"><span class="nav-number">14.</span> <span class="nav-text">配置</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">JTRAINBOW</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://jtrainbow.github.io/2024/05/07/MySql/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="JTRAINBOW">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JTRAINBOWの博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="MySql | JTRAINBOWの博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MySql
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-05-07 07:58:23" itemprop="dateCreated datePublished" datetime="2024-05-07T07:58:23+08:00">2024-05-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-05-29 02:46:49" itemprop="dateModified" datetime="2024-05-29T02:46:49+08:00">2024-05-29</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>Mysql是一个开源、成熟的关系型数据库（RDB，Relational Database），主要用于存储持久化数据。</p>
+<h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><p>MySql可以分为服务层和数据层，服务层负责处理查询解析、分析优化、缓存和客户端交互，数据层负责数据存储和读取。</p>
+<ol>
+<li>连接器：管理客户端连接，用于身份认证和权限验证</li>
+<li>查询缓存：执行查询语句时，优先从缓存中检索，如果检索到数据则直接返回否则去存储引擎中查询数据并缓存，MySql8后移除</li>
+<li>分析器：解析SQL语句的词法和语义并且预处理</li>
+<li>优化器：按照MySql认为的最优方案执行SQL</li>
+<li>执行器：执行语句，然后从存储引擎返回数据，执行语句之前会先判断是否有权限，如果没有权限的话，就会报错</li>
+<li>存储引擎：负责数据的存储和读取，插件式架构，主要插件有InnoDB和MyISAM等类型</li>
+<li>日志：binlog，记录更新语句的日志，用于备份和同步</li>
+</ol>
+<h2 id="SQL执行流程"><a href="#SQL执行流程" class="headerlink" title="SQL执行流程"></a>SQL执行流程</h2><ol>
+<li>查询：权限校验-&gt;查询缓存-&gt;分析器-&gt;优化器-&gt;权限校验-&gt;执行器-&gt;存储引擎</li>
+<li>更新：权限校验-&gt;分析器-&gt;执行器-&gt;存储引擎（InnoDB）-&gt;redo log（prepare状态）-&gt;binlog-&gt;redo log（commit状态）-&gt;清除查询缓存</li>
+</ol>
+<h2 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h2><p>索引是一种用于快速查询和检索数据的数据结构，其本质可以看成是一种排序好的数据结构，底层数据结构存在很多种类型，常见的索引结构有：Hash表、B树、B+树、红黑树。</p>
+<ol>
+<li>优点：<ul>
+<li>使用索引可以大大加快数据的检索速度（大大减少检索的数据量）, 减少磁盘IO次数，这也是创建索引的最主要的原因</li>
+<li>通过创建唯一性索引，可以保证数据库表中每一行数据的唯一性</li>
+<li>数据量比较大时，索引查询比全表扫描快</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>创建索引和维护索引需要耗费许多时间。当对表中的数据进行增删改的时候，如果数据有索引，那么索引也需要动态的修改，会降低SQL执行效率</li>
+<li>索引需要使用物理文件存储，会耗费一定磁盘空间</li>
+<li>数据量比较小时，索引查询性能提升不明显</li>
+</ul>
+</li>
+</ol>
+<p>在MySQL中，无论是Innodb还是MyIsam，都使用了B+树作为索引结构。</p>
+<ol>
+<li>Hash表：键值对集合，查询时间复杂度O(1)<ul>
+<li>优点：通过哈希算法计算出key的哈希值，即索引&#x2F;index</li>
+<li>缺点<ul>
+<li>哈希冲突：不同的key可能计算出相同的哈希值，需要用链地址法将相同哈希值的value保存在链表中</li>
+<li>不支持排序和范围查询</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>二叉查找树（BST，Binary Search Tree）：左子节点小于父节点，右子节点大于父节点，查询时间复杂度O(logN)<ul>
+<li>优点：基于二分查找查询，支持排序和范围查询</li>
+<li>缺点：平衡程度依赖于插入顺序，极端情况会退化成斜树（线性链表），导致时间复杂度变成O（N）</li>
+</ul>
+</li>
+<li>AVL树：高度平衡二叉树，保证了任何节点的左右子树高度差不超过1，时间复杂度O(logN)<ul>
+<li>优点：通过旋转操作保证了二叉树的严格平衡</li>
+<li>缺点：<ul>
+<li>插入、删除时需要频繁旋转</li>
+<li>一个节点只能保存一个数据，因此磁盘IO次数会比较多</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>红黑树：自平衡二叉查找树，通过在插入和删除节点时进行颜色变换和旋转操作，使得树始终保持大致平衡状态，查询时间复杂度O(logN)<ul>
+<li>优点：不追求严格平衡，插入和删除节点时只需进行O(1)次数的旋转和变色操作</li>
+<li>缺点：<ul>
+<li>大致平衡状态可能会导致树的高度比较高，进而导致一些数据的磁盘IO次数比较多</li>
+<li>一个节点只能保存一个数据，因此磁盘IO次数会比较多</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>B树：多路平衡查找树，时间复杂度O(logN)<ul>
+<li>优点：一个节点可以保存多个数据，降低树的高度</li>
+<li>缺点：节点既存放key也存放value，可能会导致不必要的磁盘IO</li>
+</ul>
+</li>
+<li>B+树：B树的变种<ul>
+<li>一个节点可以保存多个数据，降低树的高度</li>
+<li>叶子节点保存key和value，非叶子节点只保存key</li>
+<li>叶子节点通过双向链表指向相邻的叶子节点</li>
+<li>具备更少的磁盘IO次数、更稳定的查询效率和更适于范围查询</li>
+</ul>
+</li>
+</ol>
+<h3 id="索引类型"><a href="#索引类型" class="headerlink" title="索引类型"></a>索引类型</h3><ol>
+<li>按照数据结构维度划分<ul>
+<li>B树索引：MySQL里默认和最常用的索引类型，只有叶子节点存储value，非叶子节点只有指针和key</li>
+<li>哈希索引：类似键值对的形式，一次即可定位</li>
+<li>R树索引：一般不会使用，仅支持geometry数据类型，优势在于范围查找，效率较低一般不会使用，通常使用搜索引擎如ElasticSearch代替</li>
+<li>全文索引：对文本的内容进行分词，进行搜索。目前只有CHAR、VARCHAR、TEXT列上可以创建全文索引。效率较低一般不会使用，通常使用搜索引擎如ElasticSearch代替</li>
+</ul>
+</li>
+<li>按照底层存储方式角度划分<ul>
+<li>聚簇索引（聚集索引）：索引结构和数据一起存放的索引，InnoDB中的主键索引就属于聚簇索引<ul>
+<li>B+树上所有非叶子节点存储索引和页内存地址，叶子节点存储索引和数据，因此索引数据（主键）最好是有序的或者整数，并且最好不轻易修改</li>
+</ul>
+</li>
+<li>非聚簇索引（非聚集索引）：索引结构和数据分开存放的索引，InnoDB的二级索引（辅助索引）就属于非聚簇索引，MyISAM不管主键还是非主键使用的都是非聚簇索引<ul>
+<li>B+树上所有非叶子节点存储索引和页内存地址，叶子节点存储索引和数据指针（主键数据或数据内存地址），因此可能需要二次查询（回表）查出真正的数据值</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>按照应用维度划分<ul>
+<li>主键索引：加速查询 + 列值唯一（不可以有null）+ 表中只有一个</li>
+<li>普通索引：仅加速查询</li>
+<li>唯一索引：加速查询 + 列值唯一（可以有null）</li>
+<li>覆盖索引：一个索引包含&#x2F;覆盖所有需要查询的字段的值，因此不需要额外再查询</li>
+<li>联合索引：多列值组成一个索引，专门用于组合搜索，其效率大于索引合并</li>
+<li>全文索引：对文本的内容进行分词，进行搜索。目前只有char、varchar、text列上可以创建全文索引。效率较低一般不会使用，通常使用搜索引擎如ElasticSearch代替</li>
+</ul>
+</li>
+<li>主键索引：数据表的主键就是使用的主键索引，主键不能重复不能为null。InnoDB中如果没有主键，会选择不为null的唯一索引作为主键索引，如果再没有，就会自动创建一个6Byte的自增主键</li>
+<li>二级索引：普通索引、唯一索引、前缀索引都属于二级索引<ul>
+<li>普通索引：一张表运行创建多个普通索引，并允许数据重复和null，可以快速查询数据</li>
+<li>唯一索引：一张表运行创建多个唯一索引，并允许数据为null但是不能重复，可以快速查询数据但是主要是为了限制数据不能重复</li>
+<li>前缀索引：只适用于字符串类型的数据，即对字符串的前缀字符创建索引，比普通索引建立的数据量小</li>
+<li>全文索引：只适用于char、varchar、text文本类型的数据</li>
+</ul>
+</li>
+<li>联合索引：使用表中多个字段创建的索引，包含这些列的查询都会走联合索引<ul>
+<li>最左前缀匹配原则：联合索引(c1,c2,c3)相当于(c1)、(c1,c2)、(c1,c2,c3)三个普通索引，因此区分度高的字段优先排在左边从而过滤更多数据</li>
+</ul>
+</li>
+<li>索引下推：索引下推（ICP，Index Condition PushDown）是MySQL5.6版本中提供的一项索引优化功能<ul>
+<li>允许存储引擎在索引遍历过程中，执行部分where字句的判断条件，直接过滤掉不满足条件的记录，从而减少回表次数，提高查询效率</li>
+</ul>
+</li>
+</ol>
+<h3 id="索引优化"><a href="#索引优化" class="headerlink" title="索引优化"></a>索引优化</h3><ol>
+<li>适合创建索引的字段<ul>
+<li>不为null的字段：索引字段的数据应该尽量不为null<ul>
+<li>对于数据为null的字段，数据库较难优化</li>
+<li>如果字段频繁被查询，但又避免不了为null，可以使用0,1,true,false这样语义较为清晰的短值或短字符作为替代</li>
+</ul>
+</li>
+<li>频繁查询的字段和作为条件查询的字段</li>
+<li>频繁需要排序的字段：索引已经排序</li>
+<li>涉及到多表关系且频繁使用的字段：提高多表连接查询的效率</li>
+</ul>
+</li>
+<li>不适合创建索引的字段<ul>
+<li>频繁更新的字段：会增加维护索引的压力</li>
+</ul>
+</li>
+<li>限制每张表的索引数量<ul>
+<li>需要维护多个索引，增加了更新操作的执行时间</li>
+<li>可能会增加SQL优化器的执行时间</li>
+</ul>
+</li>
+<li>使用联合索引代替多个单列普通索引，避免索引冗余</li>
+<li>使用前缀索引代替字符串类型的单列普通索引</li>
+<li>避免索引失效（失效原因）<ul>
+<li>查询条件的范围过大（where between and、in、not in），可能会使索引失效而走全表扫描，更会增加数据传输和处理时间的性能浪费</li>
+<li>创建了联合索引但是查询条件不符合最左前缀匹配原则</li>
+<li>在索引列上进行计算、类型转换、内置函数等操作</li>
+<li>like条件查询以<code>%</code>开头</li>
+<li>or条件查询所在列至少有一个没有索引</li>
+</ul>
+</li>
+</ol>
+<h2 id="存储引擎"><a href="#存储引擎" class="headerlink" title="存储引擎"></a>存储引擎</h2><p>MySql的存储引擎是插件式架构，内置了多种存储引擎，并且可以通过MySql定义的存储引擎标准接口来实现第三方存储引擎。</p>
+<ol>
+<li>MyISAM：MySql5.5之前默认的存储引擎，使用B+树作为索引结构<ul>
+<li>具有全文检索、压缩、空间函数、数据缓存等特性，仅支持表级锁</li>
+<li>不支持事务、外键、崩溃恢复、MVCC、读写并发，索引文件和数据文件分离</li>
+<li>非聚簇索引：B+树的叶子节点的data域存放的是数据记录的地址，检索时先从B+树找到数据地址再读取具体的数据值</li>
+</ul>
+</li>
+<li>InnoDB：MySql5.5之后默认的存储引擎，使用B+树作为索引结构<ul>
+<li>支持事务、外键、崩溃恢复、MVCC、读写并发、表级锁、行级锁、间隙锁</li>
+<li>聚簇索引：数据文件本身就是索引文件，索引的Key就是数据表的主键，其他索引都是辅助索引并且data域存放的是主键的值</li>
+</ul>
+</li>
+<li>对比：InnoDB的性能比MyISAM更强大<ul>
+<li>InnoDB支持行级别的锁粒度，MyISAM不支持，只支持表级别的锁粒度</li>
+<li>MyISAM不提供事务支持，InnoDB提供事务支持，实现了SQL标准定义了四种隔离级别</li>
+<li>MyISAM不支持外键，而InnoDB支持</li>
+<li>MyISAM不支持MVCC，而InnoDB支持</li>
+<li>虽然MyISAM引擎和InnoDB引擎都是使用B+Tree作为索引结构，但是两者的实现方式不一样</li>
+<li>MyISAM不支持数据库异常崩溃后的安全恢复，而InnoDB支持</li>
+<li>MyISAM使用键缓存仅缓存了索引页而不缓存数据页，InnoDB使用缓冲池缓存了数据页和索引页</li>
+</ul>
+</li>
+</ol>
+<h2 id="InnoDB架构"><a href="#InnoDB架构" class="headerlink" title="InnoDB架构"></a>InnoDB架构</h2><h3 id="内存结构"><a href="#内存结构" class="headerlink" title="内存结构"></a>内存结构</h3><ol>
+<li><code>Buffer Pool</code>：缓冲池，链表结构，内部数据包括<code>Page Cache</code>、<code>Change Buffer</code>、<code>Data Dictionary Cache</code><ul>
+<li>InnoDB中数据管理的最小单位是页，默认每页16KB，包含了若干行数据</li>
+<li>为了提供缓存管理效率，InnoDB的缓冲池通过一个页链表实现，很少访问的页通过LRU算法淘汰</li>
+<li>页链表分为两个部分<ul>
+<li><code>new sublist</code>：<code>old sublist</code>中的页被访问到会移动到<code>new sublist</code>的头部</li>
+<li><code>old sublist</code>：新读取的页会加入到<code>old sublist</code>的头部</li>
+</ul>
+</li>
+<li>页读取方式<ul>
+<li>内存读取：读取已经被MySql加载到内存的页</li>
+<li>随机IO：从磁盘中查找页并读取</li>
+<li>顺序读取：从磁盘中查找页并按照顺序批量读取</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>Change Buffer</code>：变更缓冲区，缓冲池的内部结构，使用B+树实现，用于缓存除唯一索引外的二级索引页的更改操作<ul>
+<li>如果二级索引页已经在缓冲区，则直接修改</li>
+<li>如果二级索引页不在缓冲区，则先将修改保存到变更缓冲区，当真正二级索引页被读取到缓冲区时再合并修改内容</li>
+</ul>
+</li>
+<li><code>Adaptive Hash Index</code>：自适应哈希索引，哈希结构，由InnoDB自动维护，用于提高索引查询速度<ul>
+<li>AHI查询的时间复杂度为O(1)，比B+树O(logN)快</li>
+<li>InnoDB通过观察索引页上的查询次数，如果超过阈值则认为建立AHI比直接查询B+树的效率高，就会自动建立AHI</li>
+<li>AHI的key是查询条件，value是索引在B+树上的位置</li>
+<li>相同查询条件的AHI会自动合并，即自适应</li>
+</ul>
+</li>
+<li><code>Log Buffer</code>：日志缓冲区，用于缓存<code>redo log</code>，默认16M<ul>
+<li>日志先行策略：数据先在<code>Buffer Pool</code>中修改完成并记录到<code>Log Buffer</code>的<code>redo log</code>，随后立即响应客户端事务提交成功，<code>redo log</code>再通过顺序IO提交事务持久化到磁盘</li>
+<li><code>redo log</code>：表空间号+数据页号+偏移量+修改数据长度+具体修改的数据</li>
+<li><code>innodb_flush_log_at_trx_commit</code>：用于控制<code>Log Buffer</code>的<code>redo log</code>如何刷新到磁盘<ul>
+<li>0：每秒一次，写入内核缓冲区并刷新到磁盘</li>
+<li>1：默认，每次提交事务时写入内核缓冲区并刷新到磁盘</li>
+<li>2：每次提交事务时写入内核缓冲区，每秒一次刷新到磁盘</li>
+</ul>
+</li>
+<li><code>Log Buffer</code>满、定期执行<code>Checkpoint</code>、后台刷新线程一秒周期执行、正常关闭Mysql都会刷盘</li>
+</ul>
+</li>
+<li><code>Operating System Cache</code>：操作系统内核缓冲区，默认使用操作系统的<code>fsync()</code>方法将内核缓冲区的内存文件刷新到磁盘文件</li>
+</ol>
+<h3 id="磁盘结构"><a href="#磁盘结构" class="headerlink" title="磁盘结构"></a>磁盘结构</h3><h4 id="构成"><a href="#构成" class="headerlink" title="构成"></a>构成</h4><p>InnoDB的磁盘结构主要分为<code>tablespace</code>和<code>redo log</code>。</p>
+<p>表空间是一个逻辑概念，它可以同一管理空间中的所有数据文件，一个数据库可以有多个表空间，但一个表空间只能属于一个数据库。</p>
+<ol>
+<li><code>system tablespace</code>：系统表空间，数据存放在<code>ibdata1</code>文件中，包含内容有数据字典信息、双写缓冲区、变更缓冲区、系统表空间内置表的数据和索引<ul>
+<li>数据字典信息：InnoDb内置的一些内部系统表记录的元数据，用于客户端插入语句的校验、数据和索引的定位（校验表、检索表空间、段、区、页）</li>
+<li>双写缓冲区：<code>Log Buffer</code>的<code>redo log</code>刷新到磁盘时无法保证原子写入表空间文件（页16KB&gt;<br>磁盘扇区512Byte），如果在写入过程中操作系统出现问题，那可能只写入了部分数据，因此在数据写入表空间文件前会先写入双写缓冲区，如果双写缓存区写入出错则直接丢弃<code>Log Buffer</code>的<code>redo log</code><br>，如果表空间文件写入出错则可以从双写缓冲区恢复</li>
+</ul>
+</li>
+<li><code>general tablespace</code>：常规表空间，通过<code>create tablespace</code>创建，多个表可以共享一个常规表空间，各个表的数据和索引分散存储在<code>.idb</code>文件中</li>
+<li><code>temporary tablespace</code>：临时表空间，非压缩的临时表的存储空间<ul>
+<li>会话临时表空间：由同一个session的请求创建，最多两个，一个是客户端创建的，一个是优化器创建的</li>
+<li>全局临时表空间：默认是数据目录下的<code>ibtmp1</code>文件，被所有临时表共享，保存了<code>undo log</code>，用于事务回滚</li>
+</ul>
+</li>
+<li><code>file-per-table tablespace</code>：独立空间表，每个表单独拥有的表空间，即每个表可以有单独的<code>.ibd</code>数据文件</li>
+<li><code>undo tablespace</code>：Undo表空间，存放<code>undo log</code>，用于事务回滚，MySql初始化时会创建两个默认的（undo_001和undo_002），通过<code>innodb_undo_directory</code>指定位置<ul>
+<li>如果不指定，则存放在数据字典中（innodb_undo_001和innodb_undo_002）</li>
+<li><code>undo log</code>在事务执行过程中就会产生，事务提交后才会持久化，如果事务回滚了则<code>undo log</code>也会删除</li>
+<li>可以实现MVCC（多版本并发控制）</li>
+</ul>
+</li>
+<li><code>redo log</code>：存储<code>Log Buffer</code>刷到磁盘的数据，Mysql8.0.30前由<code>innodb_log_file_size</code>和<code>innodb_log_file_in_group</code><br>配置文件大小和数量；之后固定32个，由<code>innodb_redo_log_capacity</code>配置总容量<ul>
+<li><code>redo log</code>：<code>log blocks</code> &#x3D; 表空间号+数据页号+偏移量+修改数据长度+具体修改的数据</li>
+<li><code>log blocks</code>：512Byte的数据块，日志记录&#x2F;实际数据（496）&#x3D; 数据块（512）- 块头（12）-块尾（4）</li>
+</ul>
+</li>
+</ol>
+<h4 id="表空间结构"><a href="#表空间结构" class="headerlink" title="表空间结构"></a>表空间结构</h4><ol>
+<li>表文件：<ul>
+<li><code>.opt文件</code>：保存数据库的字符集和校验方法</li>
+<li><code>.frm文件</code>：保存表的数据字典信息，这是历史原因遗留的备份文件，InnoDB的数据字典信息主要是存储在系统表空间的<code>ibdata1</code>文件中</li>
+<li><code>.ibd文件</code>：保存表的数据和索引，表空间对应的文件，使用限制：每个表最多64个二级索引、每行数据不能超过65535、联合索引不能超过16个字段等</li>
+</ul>
+</li>
+<li>文件结构：<ul>
+<li><code>tablespace</code>：表空间，由一个或多个段组成</li>
+<li><code>segment</code>：段，段是磁盘上以区为单位执行空间分配和回收的申请者，是一个逻辑概念，用来管理物理文件，一个段最多包含256个区（256M大小）<ul>
+<li>为了提高范围查询的效率，段又分为数据段、索引段、回滚段等，</li>
+<li>数据段是为了保持叶子节点在磁盘上的连续，可以在范围查询时实现顺序I&#x2F;O操作，因为这些叶子节点包含实际的表数据</li>
+<li>索引段就是非叶子结点部分</li>
+<li>回滚段用于数据的回滚和多版本控制</li>
+</ul>
+</li>
+<li><code>extent</code>：区，由64个连续的页组成的空间，默认1MB<ul>
+<li>让逻辑相邻的页在物理上也相邻，在范围查询时可以顺序IO</li>
+<li>为了保证区中页的连续性，数据量比较大时InnoDB会一次从磁盘申请多个物理连续的区</li>
+</ul>
+</li>
+<li><code>page</code>：页，是整个InnoDB存储的最基本构件，也是InnoDB磁盘管理的最小单位，存储了与数据库相关的所有内容<ul>
+<li>所有页的结构都是一样的，分为文件头（前38个字节）、页数据和文件尾（后8个字节）</li>
+</ul>
+</li>
+<li><code>row</code>：数据行，数据库表的一行完整数据，多行数据组成页数据</li>
+</ul>
+</li>
+<li>Page页分类<ul>
+<li><code>file_space_header/fsh_hdr</code>页：第0页，用于存储区的元信息，里面的256个区描述符（extent descriptors，XDES）存储了256个区的元信息，包括区的使用情况和区内页的使用情况</li>
+<li><code>ibuf_bitmap</code>页：第1页，用于记录<code>change buffer</code>的使用情况</li>
+<li><code>inode</code>页：第2页，用于记录文件段（FSEG）的信息，每页有85个inode，每个inode占用192字节，记录了段id、段内区信息、区内碎片页信息<ul>
+<li>文件段ID</li>
+<li>段内区的信息：记录了free（完全空闲）、not_full（部分空闲）、full（没有空闲）三种类型的区的信息（List Base Node，包含链表长度、头尾页号和偏移量的结构体）</li>
+<li>区内碎片页信息：每个区可以有32个碎片页，InnoDB在段内以区为单位分配磁盘空间，如果数据量比较少，区内页使用率比较少，就会优先使用碎片页从而节省空间，而不是又申请区，当区内碎片页数量超过32时才会申请新的区</li>
+</ul>
+</li>
+<li><code>index</code>页：第3页之后，索引页的叶子结点的data就是数据，如聚簇索引存储的行数据，非聚簇索引存储的主键值</li>
+</ul>
+</li>
+<li>Page页结构<ul>
+<li><code>File header</code>：文件头，36字节，主要保存了上下两页的指针和本页的状态信息</li>
+<li><code>Page header</code>：页面头，56字节，记录数据页的状态信息</li>
+<li><code>Infimum</code>：虚拟的一行记录，记录本页中比主键小的值</li>
+<li><code>Supremum Records</code>：虚拟的一行记录，记录本页中比主键大的值</li>
+<li><code>User Records</code>：实际存储的行数据</li>
+<li><code>Free Space</code>：空闲空间</li>
+<li><code>Page Directory</code>：页目录</li>
+<li><code>File Tailer</code>：8字节，用于检查页是否已完整写入磁盘</li>
+</ul>
+</li>
+</ol>
+<h2 id="Mysql日志"><a href="#Mysql日志" class="headerlink" title="Mysql日志"></a>Mysql日志</h2><h3 id="redo-log"><a href="#redo-log" class="headerlink" title="redo log"></a>redo log</h3><ol>
+<li>重做日志，基于InnoDB引擎，实现Mysql崩溃恢复，保证数据持久性和完整性<ul>
+<li>客户端CURD数据时InnoDB优先从<code>Buffer Pool</code>检查，没有则会把数据所在页加载到<code>Buffer Pool</code>中</li>
+<li>在<code>Buffer Pool</code>更改数据时会把数据页的更改记录更新到<code>Log Buffer</code>，随后响应客户端</li>
+<li><code>Log Buffer</code>先刷盘到磁盘的双写缓冲区和<code>redo log</code>文件，再刷盘到表空间文件</li>
+</ul>
+</li>
+<li>文件组：按照顺序环形写入<ul>
+<li><code>write pos</code>：当前记录的位置，写入数据，写完后移</li>
+<li><code>check point</code>：恢复数据的位置，恢复完成清除数据并后移</li>
+<li>当<code>write pos</code>&#x3D;<code>check point</code>时，说明日志文件组满了，需要将<code>check point</code>后移</li>
+</ul>
+</li>
+</ol>
+<h3 id="binlog"><a href="#binlog" class="headerlink" title="binlog"></a>binlog</h3><ol>
+<li>二进制归档日志，属于Mysql的server层的逻辑日志，按照顺序记录了SQL语句的原始逻辑，主要用于数据备份、集群同步</li>
+<li>格式（<code>binlog_format</code>）：<code>update table1 set time = now() where id = 1</code><ul>
+<li><code>statement</code>：记录SQL语句的原文：<code>use database1;update table1 set time = now() where id = 1</code></li>
+<li><code>row</code>：记录SQL语句的event引用，将时间函数变成具体的时间，需要通过binlog工具解析：<code>update database1.table1 set time = 1111 where @1 = 1 @2 = 1110</code></li>
+<li><code>mixed</code>：<code>statement</code>和<code>row</code>混合，MySql判断SQL语句可能会引起数据不一致时使用<code>row</code>，否则使用<code>statement</code></li>
+</ul>
+</li>
+<li>写入时机：事务执行过程中，先把日志写到<code>binlog cache</code>，事务提交的时候，再把<code>binlog cache</code>写到文件系统缓存<code>page cache</code>，最后<code>fsync</code>刷盘到<code>binlog</code>文件中<ul>
+<li><code>binlog_cache_size</code>：每个刷盘线程使用的内存大小，超过会暂存到磁盘</li>
+<li><code>sync_binlog</code>：<ul>
+<li>0：每次提交事务只写入<code>page cache</code>，由系统判断<code>fsync</code>时机</li>
+<li>1：每次提交事务先写入<code>page cache</code>，再<code>fsync</code></li>
+<li>n(n &gt; 1)：每次提交事务先写入<code>page cache</code>，累计n次事务后再<code>fsync</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>恢复数据：两阶段提交<ul>
+<li>redo log（prepare状态）-&gt;bin log-&gt;redo log（commit状态）</li>
+<li>bin log刷盘出错，恢复数据时发现有redo log（prepare状态）、没有bin log则回滚事务</li>
+<li>redo log（commit状态）出错，恢复数据时发现有redo log（prepare状态）、有bin log则提交事务</li>
+</ul>
+</li>
+</ol>
+<h3 id="undo-log"><a href="#undo-log" class="headerlink" title="undo log"></a>undo log</h3><ol>
+<li>回滚日志，基于InnoDB引擎，用于事务回滚，保证事务原子性，可以实现MVCC</li>
+<li>属于逻辑日志<ul>
+<li>事务执行insert语句，undo log就会记录delete语句，事务提交后就会清除undo log</li>
+<li>事务执行update&#x2F;delete语句，undo log就会记录update&#x2F;insert语句，事务提交后不会立即清除undo log，而是保存在history list中，由后台线程purge进行清除</li>
+</ul>
+</li>
+<li>并发事务的回滚：undo log 是采用段的方式来记录<ul>
+<li>每个undo操作在记录的时候占用一个undo log segment</li>
+<li>undo log segment包含在rollback segment（回滚段）中</li>
+<li>事务开始时，需要为其分配一个rollback segment，每个rollback segment有1024个undo log segment，这有助于管理多个并发事务的回滚需求</li>
+<li>rollback segment header位于rollback segment的第一页，负责管理rollback segment</li>
+<li>history list是rollback segment header的一部分，用于保存已经提交但为清除的事务的undo log</li>
+<li>purge线程从history list清除undo log</li>
+</ul>
+</li>
+</ol>
+<h2 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h2><p>Mysql的InnoDB引擎实现了事务和SQL标准定义的四个隔离级别。</p>
+<h3 id="事务-1"><a href="#事务-1" class="headerlink" title="事务"></a>事务</h3><p>InnoDB通过<code>Buffer Pool</code>、<code>Log Buffer</code>、<code>redo log</code>、<code>undo log</code>来实现事务。</p>
+<ol>
+<li>InnoDB执行更新语句，先根据条件找到数据所在的页，并缓存到<code>Buffer Pool</code>中</li>
+<li>执行更新语句，修改<code>Buffer Pool</code>中的数据，也就是内存中的数据</li>
+<li>针对更新语句生成一个<code>RedoLog</code>对象，并存入<code>Log Buffer</code>中，用于提交事务</li>
+<li>针对更新语句生成<code>undo log</code>日志，用于事务回滚</li>
+<li>如果事务提交，那么则把<code>RedoLog</code>对象进行持久化，通过双写缓冲区将<code>Buffer Pool</code>中所修改的数据页持久化到磁盘中</li>
+<li>如果事务回滚，则利用<code>undo log</code>日志进行回滚</li>
+</ol>
+<h3 id="ACID"><a href="#ACID" class="headerlink" title="ACID"></a>ACID</h3><p>事务具有四种特性：原子性、一致性、隔离型、持久性，即ACID特性</p>
+<ol>
+<li>原子性（Atomicity）：一个事务是一个不可分割的工作单位，事务中包括的动作要么都做要么都不做。</li>
+<li>一致性（Consistency）：事务必须保证数据库从一个一致性状态变到另一个一致性状态，一致性和原子性是密切相关的。</li>
+<li>隔离性（Isolation）：一个事务的执行不能被其它事务干扰，即一个事务内部的操作及使用的数据对并发的其它事务是隔离的，并发执行的各个事务之间不能互相打扰。</li>
+<li>持久性（Durability）：一个事务一旦提交，它对数据库中数据的改变就是永久性的，后面的其它操作和故障都不应该对其有任何影响。</li>
+</ol>
+<h3 id="隔离性问题"><a href="#隔离性问题" class="headerlink" title="隔离性问题"></a>隔离性问题</h3><p>事务的隔离性定义了并发事务互不干扰，但在不同的隔离级别下，仍有可能出现一些问题：</p>
+<ol>
+<li>脏读：事务A读取事务B未提交的数据后，事务B回滚数据，导致事务A读到的数据无效。</li>
+<li>不可重复读：事务A多次查询同一数据，在查询间隔内事务B修改了数据，导致事务A得到了不同结果，</li>
+<li>幻读：事务A多次范围查询同一组数据集，在查询间隔内事务B修改了数据集，导致事务A得到的数据集不一样。如果事务中都使用快照读，那么就不会产生幻读现象，但是快照读和当前读混用就会产生幻读。</li>
+</ol>
+<h3 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h3><ol>
+<li>读未提交：最低的隔离级别<ul>
+<li>当前事务可以看到其他事务未提交的修改</li>
+<li>可能出现脏读、不可重复读和幻读</li>
+</ul>
+</li>
+<li>读已提交：Oracle默认<ul>
+<li>当前事务可以看到其他事务已提交的修改</li>
+<li>可能出现不可重复读和幻读</li>
+</ul>
+</li>
+<li>可重复读：Mysql默认<ul>
+<li>一个事务多次查询同一数据能得到一致的结果，其他事务对同一数据的修改不会造成影响</li>
+<li>可能出现幻读</li>
+</ul>
+</li>
+<li>串行化：最高的隔离级别<ul>
+<li>所有事务按照次序依次执行</li>
+</ul>
+</li>
+</ol>
+<p>不同的事务隔离级别提供了不同程度的隔离策略，以满足不同应用场景对于一致性和性能的需求，在选择事务隔离级别时，需要在数据一致性和系统性能之间进行权衡。</p>
+<h2 id="MySql锁机制"><a href="#MySql锁机制" class="headerlink" title="MySql锁机制"></a>MySql锁机制</h2><p>MySql的锁机制可以分为三种</p>
+<ol>
+<li>表级锁：开销小，加锁快，不会出现死锁，锁定粒度大，发生锁冲突的概率最高，并发度最低（MyISAM、InnoDB）</li>
+<li>行级锁：开销大，加锁慢，会出现死锁，锁定粒度最小，发生锁冲突的概率最低，并发度也最高（InnoDB）</li>
+<li>页级锁：开销和加锁时间界于表锁和行锁之间，会出现死锁，锁定粒度界于表锁和行锁之间，并发度一般（BDB引擎）</li>
+</ol>
+<h3 id="MyISAM"><a href="#MyISAM" class="headerlink" title="MyISAM"></a>MyISAM</h3><ol>
+<li>MyISAM存储引擎仅支持表级锁：表独占锁&#x2F;写锁、表共享锁&#x2F;读锁<ul>
+<li>同一张表的读锁不会阻塞读锁但会阻塞写锁</li>
+<li>同一张表的写锁会阻塞读锁和写锁。</li>
+</ul>
+</li>
+</ol>
+<h3 id="InnoDB"><a href="#InnoDB" class="headerlink" title="InnoDB"></a>InnoDB</h3><p>InnoDB存储引擎默认的事务隔离级别是可重复读，在这种隔离级别下，InnoDB支持七种锁。</p>
+<ol>
+<li>自增锁（表级锁）<ul>
+<li>自增锁（AUTO-INC Locking）是指在并发插入新行并且涉及自增列时，保证自增列的值是唯一且连续的机制</li>
+<li>自增锁的实现方式是，在分配下一个自增值之前，MySQL会获取一个表级别的锁，确保在分配新值的过程中，该值是唯一并且连续分配的</li>
+</ul>
+</li>
+<li>共享锁&#x2F;排他锁（表级锁&#x2F;行级锁）<ul>
+<li>共享锁（S）：允许多个事务去读数据，阻止其他事务取得相同数据集的排他写锁</li>
+<li>排他锁（Ｘ）：允许获得排他锁的事务更新数据，阻止其他事务取得相同的数据集的共享读锁和排他写锁</li>
+<li>对于update、delete和insert语句，InnoDB会自动给涉及到的数据集加排他锁；对于普通的select语句，InnoDB不会加任何锁</li>
+<li>事务可以通过以下语句显式地给数据集加共享锁或排他锁<ul>
+<li>共享锁：SELECT * FROM table_name WHERE … LOCK IN SHARE MODE</li>
+<li>排他锁：SELECT * FROM table_name WHERE … FOR UPDATE</li>
+</ul>
+</li>
+<li>InnoDB行锁是通过索引上的索引项来实现的，即只有通过索引条件检索数据时，InnoDB才会使用行级锁，否则InnoDB将使用表级锁</li>
+</ul>
+</li>
+<li>意向共享锁&#x2F;意向排他锁（表级锁）<ul>
+<li>意向共享锁（IS）：事务打算给一个数据行加共享锁前，必须先取得该表的意向共享锁</li>
+<li>意向排他锁（IX）：事务打算给一个数据行加排他锁前，必须先取得该表的意向排他锁</li>
+<li>意向锁是InnoDB自动加的，不需要客户端干预，由于意向锁仅仅表明意向，它其实是比较弱的锁，意向锁之间并不相互互斥，而是可以并行</li>
+<li>但意向锁会与行级锁互斥，仅意向共享锁与共享锁兼容</li>
+</ul>
+</li>
+<li>插入意向锁（间隙锁的一种）<ul>
+<li>支持插入并发</li>
+</ul>
+</li>
+<li>记录锁：锁定索引记录，行级锁<ul>
+<li><code>select * from table1 where id = 1 for update</code>，锁定id&#x3D;1的索引，阻止其他事务插入、更新、删除id&#x3D;1这一行</li>
+<li><code>select * from table1 where id = 1</code>，并没有加锁，事务使用快照读，非事务使用当前读</li>
+<li>InnoDB默认的事务隔离级别是可重复读，非事务情况下会有不可重复读问题，事务情况下不会有不可重复读问题，事务加记录锁情况下不会有不可重复读问题</li>
+<li>如果把隔离级别降级成读已提交&#x2F;读未提交，间隙锁就会失效</li>
+</ul>
+</li>
+<li>间隙锁：锁定索引范围区间内的记录，行级锁<ul>
+<li><code>select * from table1 where id &gt; 7 and id &lt; 9 for update</code>，锁定id&#x3D;8到10之间的索引，阻止其他事务插入、更新、删除id&#x3D;7、8、9这一行</li>
+<li><code>select * from table1 where id &gt; 7 and id &lt; 9</code>，并没有加锁，事务使用快照读，非事务使用当前读</li>
+<li>InnoDB默认可重复读，非实物情况下会出现幻读，事务情况下不会出现幻读，事务加间隙锁情况下不会出现幻读</li>
+<li>如果把隔离级别降级成读已提交&#x2F;读未提交，间隙锁就会失效</li>
+</ul>
+</li>
+<li>临键锁：记录锁与间隙锁的组合，锁定索引本身及之前或之后区间内的记录，行级锁<ul>
+<li><code>select * from table1 where id &lt; 3 for update</code>，锁定id&lt;&#x3D;3的索引，阻止其他事务插入、更新、删除id&#x3D;1、2、3这三行</li>
+<li><code>select * from table1 where id &lt; 3</code>，并没有加锁，事务使用快照读，非事务使用当前读</li>
+<li>InnoDB默认可重复读，非实物情况下会出现幻读，事务情况下不会出现幻读，事务加临键锁情况下不会出现幻读</li>
+<li>如果把隔离级别降级成读已提交&#x2F;读未提交，临键锁就会失效</li>
+</ul>
+</li>
+</ol>
+<h2 id="MVCC"><a href="#MVCC" class="headerlink" title="MVCC"></a>MVCC</h2><p>Mysql</p>
+<h3 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h3><p>MVCC是一种并发控制机制，用于在多个并发事务同时读写数据库时保持数据的一致性和隔离性。它是通过在每个数据行上维护多个版本的数据来实现的。当一个事务要对数据库中的数据进行修改时，MVCC会为该事务创建一个数据快照，而不是直接修改实际的数据行。</p>
+<ol>
+<li>读操作（SELECT）：当一个事务执行读操作时，它会使用快照读取。快照读取是基于事务开始时数据库中的状态创建的，因此事务不会读取其他事务尚未提交的修改<ul>
+<li>对于读取操作，事务会查找符合条件的数据行，并选择符合其事务开始时间的数据版本进行读取</li>
+<li>如果某个数据行有多个版本，事务会选择不晚于其开始时间的最新版本，确保事务只读取在它开始之前已经存在的数据</li>
+<li>事务读取的是快照数据，因此其他并发事务对数据行的修改不会影响当前事务的读取操作</li>
+</ul>
+</li>
+<li>写操作（INSERT、UPDATE、DELETE）：当一个事务执行写操作时，它会生成一个新的数据版本，并将修改后的数据写入数据库<ul>
+<li>对于写操作，事务会为要修改的数据行创建一个新的版本，并将修改后的数据写入新版本</li>
+<li>新版本的数据会带有当前事务的版本号，以便其他事务能够正确读取相应版本的数据</li>
+<li>原始版本的数据仍然存在，供其他事务使用快照读取，这保证了其他事务不受当前事务的写操作影响</li>
+</ul>
+</li>
+<li>事务提交和回滚<ul>
+<li>当一个事务提交时，它所做的修改将成为数据库的最新版本，并且对其他事务可见</li>
+<li>当一个事务回滚时，它所做的修改将被撤销，对其他事务不可见</li>
+</ul>
+</li>
+<li>版本的回收：为了防止数据库中的版本无限增长，MVCC 会定期进行版本的回收。回收机制会删除已经不再需要的旧版本数据，从而释放空间</li>
+</ol>
+<p>MVCC通过创建数据的多个版本和使用快照读取来实现并发控制。读操作使用旧版本数据的快照，写操作创建新版本，并确保原始版本仍然可用。这样，不同的事务可以在一定程度上并发执行，而不会相互干扰，从而提高了数据库的并发性能和数据一致性。</p>
+<h2 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h2><ol>
+<li>undo log日志版本链：更改操作的事务完成后，InnoDB会保留修改前的数据的undo回滚日志，并用两个隐藏属性把回滚日志串联起来<ul>
+<li>trx_id：事务id，开启事务且在执行第一条SQL执行前分配，顺序按照事务的启动顺序分配</li>
+<li>roll_pointer：回滚指针，指向上一条旧的日志记录，位于<code>rollback tablespace-&gt;rollback segment-&gt;rollback segment header-&gt;history list</code></li>
+</ul>
+</li>
+<li>read view：开启事务并执行查询操作时会生成当前事务的一致性视图，包括当前未提交事务id集合、集合中最小事务id、预分配事务id（当前最大事务id+1）、当前事务id–&gt;m_ids、min_id、max_id、trx_id<ul>
+<li>在执行查询时生成，由所有未提交事务id数组（min_id）和已提交的最大事务id（max_id）组成，事务里的任何sql查询结果，需要从对应版本链里的最新数据开始逐条跟read-view做比对从而得到最终的快照结果<ul>
+<li>可重复读隔离级别：生成后就不会再变化</li>
+<li>读可提交隔离级别：每次执行查询操作都会重新生成</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>版本链对比规则<ul>
+<li>如果trx_id&lt;min_id，表示这个版本是已提交事务生成的，即数据可见</li>
+<li>如果trx_id&gt;max_id，表示这个版本是未开启的事务生成的，即数据不可见</li>
+<li>如果min_id&lt;&#x3D;trx_id&lt;&#x3D;max_id<ul>
+<li>如果trx_id在未提交事务数组中，表示这个版本是未提交事务生成的，即数据不可见</li>
+<li>如果trx_id不在未提交事务数组中，表示这个版本是已提交事务生成的，即数据可见</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="慢查询优化"><a href="#慢查询优化" class="headerlink" title="慢查询优化"></a>慢查询优化</h2><ol>
+<li>MySql慢查询值查询语句中执行时间超过指定阈值的语句，MySql会将这些查询语句记录在指定位置<ul>
+<li><code>slow_query_log</code>：慢查询日志，0&#x2F;OFF关闭、1&#x2F;ON开启</li>
+<li><code>slow_query_log_file</code>：日志文件位置</li>
+<li><code>long_query_time</code>：超时阈值，单位秒</li>
+<li><code>log_queries_not_using_indexes</code>：未使用索引的查询也记录</li>
+<li><code>log_output</code>：记录形式（FILE&#x2F;TABLE），记录到指定文件或mysql.slow_log表</li>
+</ul>
+</li>
+<li>分析<ul>
+<li><code>mysqldumpslow -s at mysql-slow.log | more</code>，按顺序列出慢查询日志文件中所有查询语句</li>
+</ul>
+</li>
+<li>原因：可以通过执行计划具体分析具体解决<ul>
+<li>主机服务器问题：内存不足、带宽不足、磁盘IO吞吐量</li>
+<li>查询语句问题：数据量太大、查询语句未走索引</li>
+<li>应用程序问题：出现锁等待、死锁</li>
+</ul>
+</li>
+<li>解决方案：<ul>
+<li>增加主机服务器配置、集群、分库分表</li>
+<li>优化查询语句、建立合适索引</li>
+<li>优化应用程序代码，不要出现死锁</li>
+</ul>
+</li>
+</ol>
+<h2 id="设计规范-优化"><a href="#设计规范-优化" class="headerlink" title="设计规范&#x2F;优化"></a>设计规范&#x2F;优化</h2><ol>
+<li>分析需求，划分功能模块，设计E-R图和数据库表结构<ul>
+<li>可以不严格遵化三范式，保证第一范式数据库表字段属性尽量不可再拆分即可，没必要严格保证外键，可以有部分冗余</li>
+</ul>
+</li>
+<li>编写代码，创建索引<ul>
+<li>主键索引：数值类型并且自增，如雪花算法</li>
+<li>唯一索引：保证字段可以为null但是不能重复</li>
+<li>联合索引：代替多个普通索引，检索索引数量</li>
+<li>多条件查询语句尽量复合索引覆盖和索引下推</li>
+<li>代码层面优化减少不必要的索引，如逻辑删除使用回收站</li>
+<li>代码层面分页查询优化：避免查询大量数据和不必要字段、使用主键索引自查询避免limit偏移量太大</li>
+</ul>
+</li>
+<li>压力测试，优化SQL和索引<ul>
+<li>使用存储过程批量插入大量数据</li>
+<li>并发测试验证应用程序和数据库的吞吐量</li>
+</ul>
+</li>
+<li>常规测试，优化功能<ul>
+<li>边界测试验证应用程序和数据库的非正常数据的处理能力</li>
+</ul>
+</li>
+<li>慢查询日志<ul>
+<li>分析查询SQL解决查询慢的问题</li>
+</ul>
+</li>
+</ol>
+<h2 id="集群"><a href="#集群" class="headerlink" title="集群"></a>集群</h2><h3 id="集群方案"><a href="#集群方案" class="headerlink" title="集群方案"></a>集群方案</h3><p>CAP原则：一致性、可用性、分区容错性只能满足其二</p>
+<p>BASE理论：牺牲一致性，强一致性、弱一致性、最终一致性</p>
+<p>主从同步基于Mysql的binlog，分库分表、读写分离依赖于第三方组件（Sharding JDBC、MyCat、mysql proxy）</p>
+<ol>
+<li>一主一从</li>
+<li>一主多从</li>
+<li>一主多从级联同步</li>
+<li>双主</li>
+<li>环形多主</li>
+<li>多主多从</li>
+</ol>
+<h3 id="集群同步"><a href="#集群同步" class="headerlink" title="集群同步"></a>集群同步</h3><ol>
+<li>配置<ul>
+<li>配置数据库主从节点的用户权限，一般主库可以增删查改，从库只能查询</li>
+<li>每个数据库节点分配不同的<code>server_id</code></li>
+<li>从库根据主库地址、端口、用户名、密码连接到主库</li>
+<li>主库之间互为从库，根据其他主库地址、端口、用户名、密码连接到其他主库</li>
+</ul>
+</li>
+<li>binlog数据同步<ul>
+<li>主库将数据更改操作记录保存在binlog中，包括对表的增删改操作，以及对数据库结构的更改操作（创建、删除表）</li>
+<li>从库连接到主库，并请求复制数据：从库发送一个<code>change master to</code>命令告诉主库它想要复制的日志文件和位置</li>
+<li>主库收到从库的请求、或者主动通知从库，通过<code>log dump thread</code>子线程将binlog文件和位置发送给从库</li>
+<li>从库收到binlog文件和位置后，开始应用这些更改操作，从库将主库的binlog文件保存在自己的数据库中，并使用主库的binlog位置开始复制</li>
+<li>从库先写入<code>replay log</code>中，再通过<code>Sql thread</code>线程写入数据库</li>
+<li>当从库复制完一个binlog文件后，会发送一个ACK确认信号给主库，告诉主库它已经复制完该文件</li>
+<li>主库收到确认后，会继续将下一个binlog文件发送给从库，直到所有binlog文件都被复制完成</li>
+</ul>
+</li>
+</ol>
+<h3 id="分库分表"><a href="#分库分表" class="headerlink" title="分库分表"></a>分库分表</h3><ol>
+<li>垂直分库分表：根据业务模块划分</li>
+<li>水平分库分表：同一个业务模块划分多个库表，可按照时间、Hash数据分片、主键区间</li>
+</ol>
+<p>优化优先级：垂直分库-&gt;垂直分表-&gt;冗余设计-&gt;存储引擎-&gt;索引-&gt;SQL-&gt;缓存-&gt;搜索引擎-&gt;静态页面-&gt;集群-&gt;水平分库-&gt;水平分表-&gt;</p>
+<h3 id="读写分离"><a href="#读写分离" class="headerlink" title="读写分离"></a>读写分离</h3><p>依赖于第三方组件（Sharding Sphere、MyCat、mysql proxy）</p>
+<h3 id="Sharding-JDBC"><a href="#Sharding-JDBC" class="headerlink" title="Sharding JDBC"></a>Sharding JDBC</h3><ol>
+<li>概念：开源的适用于微服务的分布式数据访问基础类库，轻量级的Java框架，不需要中间层、额外部署或者其他依赖，提供分库分表、读写分离、分布式主键等功能。</li>
+<li>集成：<ul>
+<li>引入依赖<code>sharding-jdbc-spring-boot-starter</code></li>
+<li>配置参数</li>
+</ul>
+</li>
+<li>雪花算法：64位long类型分布式UUID，第一位固定0+时间戳+工作机器+序列号<ul>
+<li>第一位不用，默认0，表示正数</li>
+<li>41位表示毫秒级时间戳</li>
+<li>10位表示工作机器：前5位表示机房id、后5位表示同一机房的主机id</li>
+<li>12位表示序列号：顺序自增的数字</li>
+</ul>
+</li>
+<li>时钟回拨：雪花算法强依赖时间戳，如果服务器时间回拨，会导致雪花算法出现时钟回拨问题，即可能生成相同的id<ul>
+<li>延迟等待：如果生成id时发现当前时间戳比上一次生成id的时间戳小，就阻塞几毫秒再重试生成id，如果重试几次仍然失败，就需要发出预警由人工干预</li>
+<li>追赶策略：如果生成id时发现当前时间戳比上一次生成id的时间戳小，就尝试增加时间戳增长步长，如果重试几次仍然失败，就需要发出预警由人工干预</li>
+<li>序列号持久化：保证重启后的序列号仍然单调自增</li>
+<li>使用备用机</li>
+</ul>
+</li>
+</ol>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line"># mysql-server配置</span><br><span class="line">[mysqld]</span><br><span class="line"># TCP/IP监听端口，默认值3306</span><br><span class="line"># port=3306</span><br><span class="line"></span><br><span class="line"># 控制mysql监听哪些IP，默认值0.0.0.0，即监听所有IP，可以绑定内网IP防止公网攻击</span><br><span class="line"># bind_address=0.0.0.0</span><br><span class="line"></span><br><span class="line"># mysql的管理用户，通过mysqlId创建的文件或者目录都是被mysql系统拥有的</span><br><span class="line">user=mysql</span><br><span class="line"></span><br><span class="line"># 字符集</span><br><span class="line">character_set_server=utf8mb4</span><br><span class="line"># 排序规则</span><br><span class="line">collation_server=utf8mb4_unicode_ci</span><br><span class="line"></span><br><span class="line"># 密码认证方式，mysql8默认caching_sha2_password，老版的默认是mysql_native_password</span><br><span class="line"># default_authentication_plugin=mysql_native_password</span><br><span class="line"></span><br><span class="line"># 默认时区，默认system，即服务器的时区</span><br><span class="line"># time_zone=&#x27;+08:00&#x27;</span><br><span class="line">time_zone=&#x27;Asia/Shanghai&#x27;</span><br><span class="line"></span><br><span class="line"># 数据存储目录</span><br><span class="line">datadir=/var/lib/mysql</span><br><span class="line"></span><br><span class="line"># sock文件位置</span><br><span class="line">socket=/var/lib/mysql/mysql.sock</span><br><span class="line"></span><br><span class="line"># 导入导出操作的目录，默认为NULL，即不允许导入导出，可设置具体目录限制只能导入导出到对应目录，设置空串表示不限制</span><br><span class="line"># secure-file-priv=/var/lib/mysql-files</span><br><span class="line"></span><br><span class="line"># pid文件位置</span><br><span class="line">pid-file=/var/run/mysqld/mysqld.pid</span><br><span class="line"></span><br><span class="line"># SQL语法校验规则</span><br><span class="line"># ONLY_FULL_GROUP_BY：默认，聚合查询操作中如果SELECT的列必须在GROUP BY中</span><br><span class="line"># STRICT_TRANS_TABLES：默认，如果不能将给定的值插入到事务表中则放弃该语句；对非事务表不做限制</span><br><span class="line"># NO_ZERO_IN_DATE：默认，不允许日期和月份为零</span><br><span class="line"># NO_ZERO_DATE：默认，不允许插入零日期</span><br><span class="line"># ERROR_FOR_DIVISION_BY_ZERO：默认，INSERT/UPDATE过程中不允许数据被零除，不设置则返回NULL</span><br><span class="line"># NO_ENGINE_SUBSTITUTION：默认，如果需要的存储引擎被禁用或未编译则抛出错误；不设置此值时用默认的存储引擎替代并抛出一个异常</span><br><span class="line"># NO_AUTO_VALUE_ON_ZERO：非默认，允许自增长列设置为0，不设置时自增长列插入0或NULL会自动替换成自增长序号</span><br><span class="line"># NO_AUTO_CREATE_USER：非默认，禁止GRANT创建密码为空的用户</span><br><span class="line"># PIPES_AS_CONCAT：非默认，将&quot;||&quot;视为字符串的连接操作符而非或运算符</span><br><span class="line"># ANSI_QUOTES：非默认，将双引号视作识别符，即不能用双引号来引用字符串</span><br><span class="line">sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION</span><br><span class="line"></span><br><span class="line"># 错误日志文件位置</span><br><span class="line">log_error=/var/log/mysqld.log</span><br><span class="line"># 日志过期天数，过期自动清理，默认0表示不清理</span><br><span class="line">expire_logs_days=2</span><br><span class="line"></span><br><span class="line"># 慢查询日志收集，默认0/OFF表示关闭、1/ON表示开启</span><br><span class="line">slow_query_log=1</span><br><span class="line"># 慢查询日志文件位置，默认在/var/lib/mysql/*-slow.log</span><br><span class="line">slow_query_log_file=/var/lib/mysql/slow_query.log</span><br><span class="line"># 慢查询超时时间，默认10秒</span><br><span class="line">long_query_time=3</span><br><span class="line"></span><br><span class="line"># 开启二进制文件日志</span><br><span class="line">log_bin=ON</span><br><span class="line"># 日志文件前缀，默认值</span><br><span class="line">log_bin_basename=/var/lib/mysql/binlog</span><br><span class="line"># 日志文件索引，默认值</span><br><span class="line">log_bin_index=/var/lib/mysql/binlog.index</span><br><span class="line"># 日志文件最大容量，默认1024M</span><br><span class="line">max_binlog_size=256M</span><br><span class="line"># 日志格式，默认值，可选statement、row、mixed</span><br><span class="line">binlog_format=ROW</span><br><span class="line"># 刷盘策略，默认值</span><br><span class="line">sync_binlog=1</span><br><span class="line"># 文件过期时间，默认2592000s即30天</span><br><span class="line">binlog_expire_logs_seconds=604800</span><br><span class="line"></span><br><span class="line"># 只记录指定数据库的binlog，不配置默认记录所有数据库</span><br><span class="line"># binlog_do_db=db1</span><br><span class="line"># 不记录指定数据库的binlog</span><br><span class="line"># binlog_ignore_db=db2</span><br><span class="line"># 忽略指定数据库表的binlog，可以使用通配符&#x27;%&#x27;</span><br><span class="line"># replicate_wild_ignore=&#x27;db.table&#x27;</span><br><span class="line"></span><br><span class="line"># mysql集群实例唯一ID</span><br><span class="line">server_id=1</span><br><span class="line"># 主从复制模式：严格模式，默认值：STRICT；宽松模式/幂等模式：IDEMPOTENT</span><br><span class="line"># slave_exec_mode=STRICT</span><br><span class="line"># 忽略主从复制中出现的错误：OFF：不忽略，默认值、ALL：全忽略、errorcode：忽略指定错误、DDL_EXIST_ERRORS：忽略指定错误</span><br><span class="line"># slave_skip_errors=OFF</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/05/06/MQ/" rel="prev" title="MQ">
+                  <i class="fa fa-angle-left"></i> MQ
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/05/07/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="next" title="微服务">
+                  微服务 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">JTRAINBOW</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"jtrainbow.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="当使用Spring框架组合其他框架构建一个应用程序时，组合这些框架之间的配置往往复杂费时且一次性，因此出现了SpringBoot框架。 Spring Boot的设计目的是为了简化新Spring应用的初始搭建，它默认使用了特定的方式来进行配置，从而使开发者不用再定义模板化的配置，而是专注于业务开发。 约定优于配置约定优于配置（convention over configuration）也称作按约定编">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SPRING BOOT">
+<meta property="og:url" content="https://jtrainbow.github.io/2024/04/26/SpringBoot/index.html">
+<meta property="og:site_name" content="JTRAINBOWの博客">
+<meta property="og:description" content="当使用Spring框架组合其他框架构建一个应用程序时，组合这些框架之间的配置往往复杂费时且一次性，因此出现了SpringBoot框架。 Spring Boot的设计目的是为了简化新Spring应用的初始搭建，它默认使用了特定的方式来进行配置，从而使开发者不用再定义模板化的配置，而是专注于业务开发。 约定优于配置约定优于配置（convention over configuration）也称作按约定编">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-04-26T10:08:05.578Z">
+<meta property="article:modified_time" content="2024-05-04T13:35:48.959Z">
+<meta property="article:author" content="JTRAINBOW">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://jtrainbow.github.io/2024/04/26/SpringBoot/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://jtrainbow.github.io/2024/04/26/SpringBoot/","path":"2024/04/26/SpringBoot/","title":"SPRING BOOT"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>SPRING BOOT | JTRAINBOWの博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">JTRAINBOWの博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%A6%E5%AE%9A%E4%BC%98%E4%BA%8E%E9%85%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">约定优于配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D"><span class="nav-number">2.</span> <span class="nav-text">自动装配</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">启动流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SpringBootConfiguration"><span class="nav-number">3.1.</span> <span class="nav-text">@SpringBootConfiguration</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ComponentScan"><span class="nav-number">3.2.</span> <span class="nav-text">@ComponentScan</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EnableAutoConfiguration"><span class="nav-number">3.3.</span> <span class="nav-text">@EnableAutoConfiguration</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#starter%E7%BB%84%E4%BB%B6"><span class="nav-number">4.</span> <span class="nav-text">starter组件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%B5%81%E7%A8%8B"><span class="nav-number">4.1.</span> <span class="nav-text">创建流程</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">JTRAINBOW</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://jtrainbow.github.io/2024/04/26/SpringBoot/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="JTRAINBOW">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JTRAINBOWの博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="SPRING BOOT | JTRAINBOWの博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          SPRING BOOT
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-04-26 18:08:05" itemprop="dateCreated datePublished" datetime="2024-04-26T18:08:05+08:00">2024-04-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-05-04 21:35:48" itemprop="dateModified" datetime="2024-05-04T21:35:48+08:00">2024-05-04</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>当使用Spring框架组合其他框架构建一个应用程序时，组合这些框架之间的配置往往复杂费时且一次性，因此出现了SpringBoot框架。</p>
+<p>Spring Boot的设计目的是为了简化新Spring应用的初始搭建，它默认使用了特定的方式来进行配置，从而使开发者不用再定义模板化的配置，而是专注于业务开发。</p>
+<h2 id="约定优于配置"><a href="#约定优于配置" class="headerlink" title="约定优于配置"></a>约定优于配置</h2><p>约定优于配置（convention over configuration）也称作按约定编程，是一种软件设计范式，通过减少开发者做决定的数量，获得简单的好处而又不失灵活性。</p>
+<p>Spring Boot以最简配置为核心思想，提供了spring本身和主流第三方框架的默认配置，在组合这些框架时只需要引入对应的依赖，定义极少配置甚至不用配置即可使用。</p>
+<ol>
+<li>如果没有自定义配置，则采用约定的默认配置</li>
+<li>如果有特殊需求不符合约定的默认配置，也可以自定义配置</li>
+</ol>
+<h2 id="自动装配"><a href="#自动装配" class="headerlink" title="自动装配"></a>自动装配</h2><p>自动装配是指Spring Boot通过分析项目依赖中约定的默认配置和自定义配置，自动装配Spring应用程序所需的组件，而无需手动配置大量的XML配置文件或Java代码。</p>
+<p>自动装配功能通过@SpringBootApplication注解启动，自动从约定文件中读取Spring Boot提供的JavaConfig配置类并注册成Bean。</p>
+<h2 id="启动流程"><a href="#启动流程" class="headerlink" title="启动流程"></a>启动流程</h2><p>注解@SpringBootApplication &#x3D; @SpringBootConfiguration + @EnableAutoConfiguration + @ComponentScan</p>
+<h3 id="SpringBootConfiguration"><a href="#SpringBootConfiguration" class="headerlink" title="@SpringBootConfiguration"></a>@SpringBootConfiguration</h3><p><code>@SpringBootConfiguration</code>注解内部使用了<code>@Configuration</code>注解，并使用<code>@AliasFor</code>注解覆盖了<code>@Configuration</code>注解的<code>proxyBeanMethods</code><br>属性，可以认为<code>@SpringBootConfiguration</code>注解继承了<code>@Configuration</code>注解并<code>Override</code>了<code>proxyBeanMethods</code>属性。</p>
+<p>标注了<code>@Configuration</code>注解的类是JavaConfig形式的配置类，SpringIOC容器会把配置类下所有标注了<code>@Bean</code>注解的方法返回的对象注册成Bean。</p>
+<h3 id="ComponentScan"><a href="#ComponentScan" class="headerlink" title="@ComponentScan"></a>@ComponentScan</h3><p><code>@ComponentScan</code>的功能是自动扫描符合条件的组件，并加载到SpringIOC容器，可以通过<code>basePackages</code>等属性来细粒度的定制自动扫描的范围，如果不指定，则默认扫描同级路径及子路径。</p>
+<h3 id="EnableAutoConfiguration"><a href="#EnableAutoConfiguration" class="headerlink" title="@EnableAutoConfiguration"></a>@EnableAutoConfiguration</h3><p><code>@EnableAutoConfiguration</code>注解是Spring Boot实现自动装配的核心，其工作流程按照顺序依次是：</p>
+<ol>
+<li>启动类的复合注解<code>@SpringBootApplication</code>内置<code>@EnableAutoConfiguration</code>注解</li>
+<li><code>@EnableAutoConfiguration</code>注解通过<code>@Import</code>注解导入<code>AutoConfigurationImportSelector</code>类</li>
+<li><code>AutoConfigurationImportSelector</code>类实现的接口之一<code>DeferredImportSelector</code>通过内置接口<code>Group</code>的<code>process()</code>和<code>selectImports()</code><br>覆盖了<code>ImportSelector</code>接口的<code>selectImports()</code></li>
+<li><code>process()</code>调用<code>getAutoConfigurationEntry()</code></li>
+<li><code>getAutoConfigurationEntry()</code>调用<code>getCandidateConfigurations()</code></li>
+<li><code>getCandidateConfigurations()</code>获取约定文件下的配置类全限定名</li>
+<li><code>selectImports()</code>获取所有配置类并去重和移除不需要的配置类</li>
+</ol>
+<p>**<code>@Import()</code>**：用于在配置类中导入其他配置类或者普通的Java类</p>
+<ul>
+<li>导入实现了<code>ImportSelector</code>接口的类：不注入该类型的对象，调用<code>selectImports()</code>方法，将返回的数据注入到容器中</li>
+<li>导入实现了<code>ImportBeanDefinitionRegistrar</code>接口的类：不注入该类型的对象，调用<code>registerBeanDefinitions()</code>方法，通过注册器注入</li>
+<li>导入其他普通类型：直接注入该类型的对象</li>
+</ul>
+<p>**<code>AutoConfigurationImportSelector</code>*<em>：实现了SpringIOC容器初始化和Bean初始化的</em>Aware扩展接口和<code>DeferredImportSelector</code>延迟导入选择器接口</p>
+<ul>
+<li><code>DeferredImportSelector</code>：实现了<code>ImportSelector</code>接口并内置了一个Group接口，包含了要导入的配置类的元注解信息和类名的Group.Entry</li>
+<li><code>ImportSelector</code>：<code>selectImports()</code>找到并返回需要自动配置的配置类的全限定名</li>
+<li><code>getImportGroup()</code>：<code>DeferredImportSelector</code>接口中覆盖<code>ImportSelector</code>接口的<code>selectImports()</code>的方法</li>
+<li><code>getAutoConfigurationEntry()</code>：从约定的<code>META-INF/spring.factories</code>文件(3.0之前)或者<code>META-INF/spring/*.imports</code>文件（3.0之后）中加载配置类</li>
+</ul>
+<h2 id="starter组件"><a href="#starter组件" class="headerlink" title="starter组件"></a>starter组件</h2><p>Spring Boot Starter是Spring Boot定义的一种规范，用于简化Spring应用的依赖管理和配置。</p>
+<p>在Spring项目中，导入或自定义一个中间件的功能主要有三步：</p>
+<ol>
+<li>导入依赖，定义需要的配置类</li>
+<li>将配置类交给SpringIOC容器管理</li>
+<li>通过@Resource、@Autowired、ApplicationContext.getBean()获取Bean实例并使用</li>
+</ol>
+<p>其中前两个步骤在每一个spring项目中都需要做复杂费时且一次性的配置，因此可以通过遵循Spring Boot Starter规范一次性定义好所有的配置并打包成Starter组件，以后项目中需要便可以拿来即用。</p>
+<h3 id="创建流程"><a href="#创建流程" class="headerlink" title="创建流程"></a>创建流程</h3><ol>
+<li>创建一个spring工程，导入<code>spring-boot-starter</code>和<code>spring-boot-configuration-processor</code>基础依赖</li>
+<li>按照JavaConfig形式定义好参数实体和配置类<ul>
+<li>@ConfigurationProperties：从application.yml文件中读取配置项信息并映射到参数实体的属性上</li>
+<li>@EnableConfigurationProperties：使@ConfigurationProperties生效</li>
+<li>@Configuration&#x2F;@Component：标注配置类</li>
+<li>@ConditionalOnProperty：如果有指定的配置，条件生效</li>
+<li>@ConditionalOnBean：如果有指定的Bean，条件生效</li>
+<li>@ConditionalOnMissingBean：如果没有指定的Bean，条件生效</li>
+<li>@ConditionalOnMissingClass：如果没有指定的Class，条件生效</li>
+<li>@ConditionalOnWebApplication：在Web环境中条件生效</li>
+<li>@ConditionalOnExpression：根据表达式判断条件是否生效</li>
+</ul>
+</li>
+<li>在<code>resources</code>目录下创建<code>META-INF/spring.factories</code>文件，暴露自定义的自动装配配置类<ul>
+<li>在同级目录下创建<code>spring-configuration-metadata.json</code>文件，用于描述参数实体的属性的元数据信息，或者在属性上使用Javadoc来描述</li>
+</ul>
+</li>
+<li>打包，其他项目引入starter依赖即可</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/04/19/Spring/" rel="prev" title="SPRING">
+                  <i class="fa fa-angle-left"></i> SPRING
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/04/28/ORM/" rel="next" title="ORM">
+                  ORM <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">JTRAINBOW</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

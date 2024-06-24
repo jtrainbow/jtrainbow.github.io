@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"jtrainbow.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Java内存模型简介Java内存模型主要由三个部分构成：1个主内存、n个线程、n个线程工作内存，Java提供了8个原子操作用于在三者之间操作数据：lock、unlock、read、load、use、assign、store、write。 12graph LR主内存 --&gt; read --&gt; load --&gt; 工作内存 --&gt; use --&gt; Java线程  12gra">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java内存模型">
+<meta property="og:url" content="https://jtrainbow.github.io/2024/04/15/Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/index.html">
+<meta property="og:site_name" content="JTRAINBOWの博客">
+<meta property="og:description" content="Java内存模型简介Java内存模型主要由三个部分构成：1个主内存、n个线程、n个线程工作内存，Java提供了8个原子操作用于在三者之间操作数据：lock、unlock、read、load、use、assign、store、write。 12graph LR主内存 --&gt; read --&gt; load --&gt; 工作内存 --&gt; use --&gt; Java线程  12gra">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-04-15T06:42:03.617Z">
+<meta property="article:modified_time" content="2024-04-15T08:58:13.740Z">
+<meta property="article:author" content="JTRAINBOW">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://jtrainbow.github.io/2024/04/15/Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://jtrainbow.github.io/2024/04/15/Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/","path":"2024/04/15/Java内存模型/","title":"java内存模型"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>java内存模型 | JTRAINBOWの博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">JTRAINBOWの博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">Java内存模型简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8%E4%B8%AA%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C"><span class="nav-number">2.</span> <span class="nav-text">8个原子操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E8%A7%84%E5%88%99"><span class="nav-number">2.1.</span> <span class="nav-text">执行规则</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%98%E9%87%8F%E6%8B%B7%E8%B4%9D%E8%A7%84%E5%88%99"><span class="nav-number">2.1.1.</span> <span class="nav-text">变量拷贝规则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8A%A0%E9%94%81%E8%A7%84%E5%88%99"><span class="nav-number">2.1.2.</span> <span class="nav-text">加锁规则</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E8%A7%81%E6%80%A7%E9%97%AE%E9%A2%98-%E6%9C%89%E5%BA%8F%E6%80%A7%E9%97%AE%E9%A2%98"><span class="nav-number">3.</span> <span class="nav-text">可见性问题 -&gt; 有序性问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Happens-Before%E8%A7%84%E5%88%99"><span class="nav-number">3.1.</span> <span class="nav-text">Happens-Before规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#volatile"><span class="nav-number">3.2.</span> <span class="nav-text">volatile</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="nav-number">3.2.1.</span> <span class="nav-text">实现原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.2.2.</span> <span class="nav-text">底层实现</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">JTRAINBOW</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://jtrainbow.github.io/2024/04/15/Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="JTRAINBOW">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JTRAINBOWの博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="java内存模型 | JTRAINBOWの博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          java内存模型
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2024-04-15 14:42:03 / 修改时间：16:58:13" itemprop="dateCreated datePublished" datetime="2024-04-15T14:42:03+08:00">2024-04-15</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="Java内存模型简介"><a href="#Java内存模型简介" class="headerlink" title="Java内存模型简介"></a>Java内存模型简介</h2><p>Java内存模型主要由三个部分构成：1个主内存、n个线程、n个线程工作内存，Java提供了8个原子操作用于在三者之间操作数据：<code>lock</code>、<code>unlock</code>、<code>read</code>、<code>load</code>、<code>use</code>、<code>assign</code>、<code>store</code>、<code>write</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">主内存 --&gt; read --&gt; load --&gt; 工作内存 --&gt; use --&gt; Java线程</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">Java线程 --&gt; assign --&gt; 工作内存 --&gt; store --&gt; write --&gt; 主内存</span><br></pre></td></tr></table></figure>
+
+<h2 id="8个原子操作"><a href="#8个原子操作" class="headerlink" title="8个原子操作"></a>8个原子操作</h2><ol>
+<li><code>lock</code>：作用于主内存，把一个变量标识为一个线程独占状态。</li>
+<li><code>unlock</code>：作用于主内存，释放一个处于锁定状态的变量。</li>
+<li><code>read</code>：作用于主内存，把一个变量的值从主内存传输到线程工作内存中，供之后的<code>load</code>操作使用。</li>
+<li><code>load</code>：作用于工作内存，把<code>read</code>操作从主内存中得到的变量值放入工作内存的变量副本中。</li>
+<li><code>use</code>：作用于工作内存，把工作内存中的一个变量传递给执行引擎，虚拟机遇到使用变量值的字节码指令时会执行。</li>
+<li><code>assign</code>：作用于工作内存，把一个从执行引擎得到的值赋给工作内存的变量，虚拟机遇到给变量赋值的字节码指令时会执行。</li>
+<li><code>store</code>：作用于工作内存，把工作内存中的一个变量传送到主内存中，供之后的<code>write</code>操作使用。</li>
+<li><code>write</code>：作用于主内存，把<code>store</code>操作从工作内存中得到的变量值存入主内存的变量中。</li>
+</ol>
+<h3 id="执行规则"><a href="#执行规则" class="headerlink" title="执行规则"></a>执行规则</h3><h4 id="变量拷贝规则"><a href="#变量拷贝规则" class="headerlink" title="变量拷贝规则"></a>变量拷贝规则</h4><ul>
+<li>不允许<code>read</code>和<code>load</code>、<code>store</code>和<code>write</code>单独出现</li>
+<li>不允许线程丢弃它最近的<code>assign</code>操作，即工作内存变化之后必须把该变化同步回主内存中</li>
+<li>不允许一个线程在没有<code>assign</code>的情况下将工作内存同步回主内存中，也就是说，只有虚拟机遇到变量赋值的字节码时才会将工作内存同步回主内存</li>
+<li>新的变量只能从主内存中诞生，即不能在工作内存中使用未被<code>load</code>和<code>assign</code>的变量，一个变量在<code>use</code>和<code>store</code>前一定先经过了<code>load</code>和<code>assign</code></li>
+</ul>
+<h4 id="加锁规则"><a href="#加锁规则" class="headerlink" title="加锁规则"></a>加锁规则</h4><ul>
+<li>一个变量在同一时刻只允许一个线程对其进行<code>lock</code>操作，但是可以被一个线程多次<code>lock</code>（锁的可重入）</li>
+<li>对一个变量进行<code>lock</code>操作会清空这个变量在工作内存中的值，然后在执行引擎使用这个变量时，需要通过<code>assign</code>或<code>load</code>重新对这个变量进行初始化</li>
+<li>对一个变量执行<code>unlock</code>前，必须将该变量同步回主内存中，即执行<code>store</code>和<code>write</code>操作</li>
+<li>一个变量没有被<code>lock</code>，就不能被<code>unlock</code>，也不能去<code>unlock</code>一个被其他线程<code>lock</code>的变量</li>
+</ul>
+<h2 id="可见性问题-有序性问题"><a href="#可见性问题-有序性问题" class="headerlink" title="可见性问题 -&gt; 有序性问题"></a>可见性问题 -&gt; 有序性问题</h2><p>线程只能操作自己的工作内存，其对变量的所有操作（读取、赋值等）都必须在工作内存中进行，不能直接读写主内存中的变量。这就有可能会导致可见性问题：</p>
+<ol>
+<li>因为对于主内存中的变量 A，其在不同的线程的工作内存中可能存在不同的副本 A1、A2、A3。</li>
+<li>不同线程的<code>read</code>和<code>load</code>、<code>store</code>和<code>write</code>不一定是连续执行的，中间可以插入其他命令。Java只能保证<code>read</code>和<code>load</code>、<code>store</code>和<code>write</code>的执行对于一个线程而言是连续的，但是并不保证不同线程的<code>read</code>和<code>load</code>、<code>store</code>和<code>write</code>的执行是连续的。</li>
+</ol>
+<p>可见性问题的本身，也是由于不同线程之间的执行顺序得不到保证导致的，因此可以将它的解决和有序性合并，即对Java一些指令的操作顺序进行限制，这样既保证了有序性，有解决了可见性。</p>
+<h3 id="Happens-Before规则"><a href="#Happens-Before规则" class="headerlink" title="Happens-Before规则"></a>Happens-Before规则</h3><p>Happens-Before规则是一种顺序约束规范，用来约束编译器的优化行为，它要求前面的操作的结果对后面的操作一定是可见的。</p>
+<p>根据类别，可以将Happens-Before规则分为4类：</p>
+<ol>
+<li>操作的顺序：<ul>
+<li><strong>程序顺序规则：</strong> 如果代码中操作 A 在操作 B 之前，那么同一个线程中 A 操作一定在 B 操作前执行，即在本线程内观察，所有操作都是有序的。</li>
+<li><strong>传递性：</strong> 在同一个线程中，如果 A 先于 B ，B 先于 C 那么 A 必然先于 C。</li>
+</ul>
+</li>
+<li>锁和 volatile：<ul>
+<li><strong>监视器锁规则：</strong> 监视器锁的解锁操作必须在同一个监视器锁的加锁操作前执行。</li>
+<li><strong>volatile 变量规则：</strong> 对 volatile 变量的写操作必须在对该变量的读操作前执行，保证时刻读取到这个变量的最新值。</li>
+</ul>
+</li>
+<li>线程和中断：<ul>
+<li><strong>线程启动规则：</strong> <code>Thread#start()</code> 方法一定先于该线程中执行的操作。</li>
+<li><strong>线程结束规则：</strong> 线程的所有操作先于线程的终结。</li>
+<li><strong>中断规则：</strong> 假设有线程 A，其他线程 interrupt A 的操作先于检测 A 线程是否中断的操作，即对一个线程的 <code>interrupt()</code> 操作和 <code>interrupted()</code>等检测中断的操作同时发生，那么 <code>interrupt()</code> 先执行。</li>
+</ul>
+</li>
+<li>对象生命周期相关：<ul>
+<li><strong>终结器规则：</strong> 对象的构造函数执行先于 <code>finalize()</code> 方法。</li>
+</ul>
+</li>
+</ol>
+<h3 id="volatile"><a href="#volatile" class="headerlink" title="volatile"></a>volatile</h3><h4 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h4><p>volatile 变量有以下两个特点：</p>
+<ol>
+<li>保证对所有线程的可见性。</li>
+<li>禁止指令重排序优化。</li>
+</ol>
+<p>Happens-Before规则中要求，对volatile变量的写操作必须在对该变量的读操作前执行，解决方法分两步：</p>
+<ol>
+<li>保证动作发生；</li>
+<li>保证动作按正确的顺序发生。</li>
+</ol>
+<p>首先，在对volatile变量进行读取和写入操作时，必须去主内存拉取最新值，或是将最新值更新进主内存，不能只更新进工作内存而不将操作同步进主内存，即在执行 <code>read</code>、<code>load</code>、<code>use</code>、<code>assign</code>、<code>store</code>、<code>write</code> 操作时：</p>
+<ol>
+<li>对于一个线程，<code>use</code> 操作必须与 <code>load</code>、<code>read</code> 操作同时出现；</li>
+<li>对于一个线程，<code>assign</code> 操作必须与 <code>store</code>、<code>write</code> 操作同时出现；</li>
+<li>对于多个线程，一个线程执行<code>use</code>操作后，其他线程必须等它继续执行完<code>load</code>和<code>read</code>操作；</li>
+<li>对于多个线程，一个线程执行<code>assign</code>操作后，其他线程必须等它继续执行完<code>store</code>和<code>write</code>操作；</li>
+</ol>
+<h4 id="底层实现"><a href="#底层实现" class="headerlink" title="底层实现"></a>底层实现</h4><p>在Java中利用了 <code>lock</code> 操作的特点实现了volatile原理：编译volatile变量的赋值操作时，在后面额外加了一行：</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 给<span class="built_in">ESP</span>寄存器+<span class="number">0</span></span><br><span class="line"><span class="keyword">lock</span> addl <span class="number">$0</span>x0,(%esp)</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>保证动作发生：<ul>
+<li><code>lock</code> 指令会将当前 CPU 的 Cache 写入内存，并无效化其他 CPU 的 Cache，相当于在执行了 <code>assign</code> 后，又进行了 <code>store</code> -&gt; <code>write</code>；</li>
+<li>这使得其他 CPU 可以立即看见 volatile 变量的修改，因为其他 CPU 在读取 volatile 变量时，会发现自己的缓存过期了，于是会去主内存中拉取最新的 volatile 变量值，也就被迫在 <code>use</code>前进行一次 <code>read</code> -&gt; <code>load</code>。</li>
+</ul>
+</li>
+<li>保证动作顺序：<ul>
+<li><code>lock</code> 的存在相当于一个内存屏障，使得在重排序时，不能把后面的指令排在内存屏障之前。</li>
+</ul>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/04/10/Java%E5%B9%B6%E5%8F%91/" rel="prev" title="Java并发">
+                  <i class="fa fa-angle-left"></i> Java并发
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/04/19/Spring/" rel="next" title="SPRING">
+                  SPRING <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">JTRAINBOW</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

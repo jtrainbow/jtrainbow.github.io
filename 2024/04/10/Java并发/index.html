@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"jtrainbow.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="基本概念Java并发是指多个线程同时执行一段代码，共享同一个资源，同时为了协调多个线程，需要用到锁等机制来保证数据的完整性和一致性。在Java中，通过多线程实现并发操作可以提高程序的执行效率，充分利用系统资源。  并发：多个任务在同一个时间段内轮流执行（时间重叠，不是同时执行）。 并行：多个任务在同一个时间段内同时执行（时间重叠，同时执行）。 同步：一个任务发出一个调用，必须一直等待该调用返回结果">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java并发">
+<meta property="og:url" content="https://jtrainbow.github.io/2024/04/10/Java%E5%B9%B6%E5%8F%91/index.html">
+<meta property="og:site_name" content="JTRAINBOWの博客">
+<meta property="og:description" content="基本概念Java并发是指多个线程同时执行一段代码，共享同一个资源，同时为了协调多个线程，需要用到锁等机制来保证数据的完整性和一致性。在Java中，通过多线程实现并发操作可以提高程序的执行效率，充分利用系统资源。  并发：多个任务在同一个时间段内轮流执行（时间重叠，不是同时执行）。 并行：多个任务在同一个时间段内同时执行（时间重叠，同时执行）。 同步：一个任务发出一个调用，必须一直等待该调用返回结果">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-04-10T00:52:15.853Z">
+<meta property="article:modified_time" content="2024-05-06T16:12:08.158Z">
+<meta property="article:author" content="JTRAINBOW">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://jtrainbow.github.io/2024/04/10/Java%E5%B9%B6%E5%8F%91/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://jtrainbow.github.io/2024/04/10/Java%E5%B9%B6%E5%8F%91/","path":"2024/04/10/Java并发/","title":"Java并发"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Java并发 | JTRAINBOWの博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">JTRAINBOWの博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">线程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">2.1.</span> <span class="nav-text">生命周期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95"><span class="nav-number">2.2.</span> <span class="nav-text">基本方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B"><span class="nav-number">2.3.</span> <span class="nav-text">创建线程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E9%80%9A%E4%BF%A1"><span class="nav-number">2.4.</span> <span class="nav-text">线程通信</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8"><span class="nav-number">3.</span> <span class="nav-text">线程安全</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%94%81"><span class="nav-number">4.</span> <span class="nav-text">锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B"><span class="nav-number">4.1.</span> <span class="nav-text">类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E9%94%81"><span class="nav-number">4.2.</span> <span class="nav-text">常见锁</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%85%E7%BD%AE%E9%94%81%EF%BC%88Intrinsic-Lock%EF%BC%89"><span class="nav-number">4.2.1.</span> <span class="nav-text">内置锁（Intrinsic Lock）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ReentrantLock"><span class="nav-number">4.2.2.</span> <span class="nav-text">ReentrantLock</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ReadWriteLock"><span class="nav-number">4.2.3.</span> <span class="nav-text">ReadWriteLock</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#StampedLock"><span class="nav-number">4.2.4.</span> <span class="nav-text">StampedLock</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ReentrantReadWriteLock"><span class="nav-number">4.2.5.</span> <span class="nav-text">ReentrantReadWriteLock</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Semaphore"><span class="nav-number">4.2.6.</span> <span class="nav-text">Semaphore</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CountDownLatch"><span class="nav-number">4.2.7.</span> <span class="nav-text">CountDownLatch</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CyclicBarrier"><span class="nav-number">4.2.8.</span> <span class="nav-text">CyclicBarrier</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LockSupport"><span class="nav-number">4.2.9.</span> <span class="nav-text">LockSupport</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Phaser"><span class="nav-number">4.2.10.</span> <span class="nav-text">Phaser</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#synchronized%E9%94%81"><span class="nav-number">4.3.</span> <span class="nav-text">synchronized锁</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-number">4.3.1.</span> <span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BF%AE%E9%A5%B0%E4%BB%A3%E7%A0%81%E5%9D%97"><span class="nav-number">4.3.1.1.</span> <span class="nav-text">修饰代码块</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BF%AE%E9%A5%B0%E6%99%AE%E9%80%9A%E6%96%B9%E6%B3%95"><span class="nav-number">4.3.1.2.</span> <span class="nav-text">修饰普通方法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BF%AE%E9%A5%B0%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95"><span class="nav-number">4.3.1.3.</span> <span class="nav-text">修饰静态方法</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%AF%E9%87%8D%E5%85%A5%E9%94%81%E5%AE%9E%E7%8E%B0"><span class="nav-number">4.3.2.</span> <span class="nav-text">可重入锁实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8E%9F%E7%90%86"><span class="nav-number">4.3.3.</span> <span class="nav-text">原理</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E5%A4%B4"><span class="nav-number">4.3.3.1.</span> <span class="nav-text">对象头</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Monitor-Record"><span class="nav-number">4.3.3.2.</span> <span class="nav-text">Monitor Record</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86"><span class="nav-number">4.3.3.3.</span> <span class="nav-text">底层原理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%94%81%E4%BC%98%E5%8C%96"><span class="nav-number">4.3.3.4.</span> <span class="nav-text">锁优化</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AQS-%E5%92%8C-CAS"><span class="nav-number">5.</span> <span class="nav-text">AQS 和 CAS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AQS%EF%BC%88AbstractQueuedSynchronizer%EF%BC%89"><span class="nav-number">5.1.</span> <span class="nav-text">AQS（AbstractQueuedSynchronizer）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CAS%EF%BC%88Compare-And-Swap%EF%BC%89"><span class="nav-number">5.2.</span> <span class="nav-text">CAS（Compare And Swap）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java%E4%B8%AD%E7%9A%84%E5%8E%9F%E5%AD%90%E7%B1%BB"><span class="nav-number">5.3.</span> <span class="nav-text">Java中的原子类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B4%BB%E8%B7%83%E6%80%A7%E5%8D%B1%E9%99%A9-%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98"><span class="nav-number">6.</span> <span class="nav-text">活跃性危险&#x2F;线程安全问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%BB%E9%94%81"><span class="nav-number">6.1.</span> <span class="nav-text">死锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B4%BB%E9%94%81"><span class="nav-number">6.2.</span> <span class="nav-text">活锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E9%A5%A5%E9%A5%BF"><span class="nav-number">6.3.</span> <span class="nav-text">线程饥饿</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8"><span class="nav-number">7.</span> <span class="nav-text">并发容器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HashMap-HashTable-TreeMap-ConcurrentHashMap"><span class="nav-number">7.1.</span> <span class="nav-text">HashMap_HashTable_TreeMap_ConcurrentHashMap</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8C%BA%E5%88%AB"><span class="nav-number">7.1.1.</span> <span class="nav-text">区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#HashMap%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="nav-number">7.1.2.</span> <span class="nav-text">HashMap源码分析</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0"><span class="nav-number">8.</span> <span class="nav-text">线程池</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8F%82%E6%95%B0"><span class="nav-number">8.1.</span> <span class="nav-text">线程池参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="nav-number">8.2.</span> <span class="nav-text">实现原理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">9.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">JTRAINBOW</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://jtrainbow.github.io/2024/04/10/Java%E5%B9%B6%E5%8F%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="JTRAINBOW">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JTRAINBOWの博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Java并发 | JTRAINBOWの博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java并发
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-04-10 08:52:15" itemprop="dateCreated datePublished" datetime="2024-04-10T08:52:15+08:00">2024-04-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-05-07 00:12:08" itemprop="dateModified" datetime="2024-05-07T00:12:08+08:00">2024-05-07</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>Java并发是指多个线程同时执行一段代码，共享同一个资源，同时为了协调多个线程，需要用到锁等机制来保证数据的完整性和一致性。在Java中，通过多线程实现并发操作可以提高程序的执行效率，充分利用系统资源。</p>
+<ol>
+<li>并发：多个任务在同一个时间段内轮流执行（时间重叠，不是同时执行）。</li>
+<li>并行：多个任务在同一个时间段内同时执行（时间重叠，同时执行）。</li>
+<li>同步：一个任务发出一个调用，必须一直等待该调用返回结果才能继续。</li>
+<li>异步：一个任务发出一个调用，不需要等待该调用返回结果就可以继续。</li>
+<li>进程：程序运行的实例，拥有独立的内存空间，系统运行程序是进程从创建、运行到结束的一个过程。通过main方法启动的Java程序就是一个JVM的进程，main方法只是进程中的一个线程。</li>
+<li><strong>线程</strong>：线程是进程执行的最小单位，它允许进程同时执行多个任务。</li>
+<li><strong>线程安全</strong>：多个线程同时访问同一个资源，能保证该资源的数据正确性和一致性。</li>
+<li>线程同步：通过同步机制控制多个线程对共享资源的访问，保证该资源的数据正确性和一致性。</li>
+<li><strong>锁</strong>：锁是一种同步机制，用来保护对共享资源的访问。</li>
+<li>阻塞：阻塞是指线程因为某些条件不满足而暂停执行，并且一直等待条件满足；非阻塞编程模式运行线程在等待时继续执行其他任务。</li>
+<li>死锁：多个线程相互等待对方释放共享资源，且等待时不释放自己已经获取的资源，从而导致各自都无法继续执行。</li>
+<li>并发集合：Java提供的线程安全的集合类，用于多线程环境下操作和管理数据。</li>
+<li>线程池：线程池是一种创建和管理线程的方式，它可以重用一组固定数量的线程来执行多个任务。</li>
+</ol>
+<h2 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h2><h3 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h3><p>线程的生命周期描述了一个线程从创建到销毁的整个过程，一般包括以下几个状态：</p>
+<ol>
+<li><p>新建状态（New）：当一个 Thread 对象被创建时，它处于新建状态。此时线程对象已经被创建，但尚未启动。可以通过调用 start() 方法来启动线程。</p>
+</li>
+<li><p>就绪状态（Runnable）：当线程被启动后，它进入就绪状态。处于就绪状态的线程已经被系统加载到内存中，可以随时被执行，但并没有分配到 CPU 时间片。处于就绪状态的线程等待系统调度器的调度。</p>
+</li>
+<li><p>运行状态（Running）：当线程获得 CPU 时间片并开始执行时，它进入运行状态。处于运行状态的线程正在执行其任务代码。</p>
+</li>
+<li><p>阻塞状态（Blocked）：当线程因为某些原因被阻塞时，它进入阻塞状态。线程可能被阻塞于 I&#x2F;O 操作、获取锁、等待其他线程的通知等情况。处于阻塞状态的线程不会消耗 CPU 时间，直到阻塞条件被解除。</p>
+</li>
+<li><p>等待状态（Waiting）：当线程调用 wait()、join()、park() 等方法时，它进入等待状态。处于等待状态的线程需要等待其他线程的通知或者特定条件的满足才能继续执行。</p>
+</li>
+<li><p>超时等待状态（Timed-Waiting）：与等待状态类似，但是在等待一段指定的时间后会自动恢复到就绪状态或者阻塞状态。线程可能因为调用 sleep()、join(timeout)、wait(timeout) 等方法进入超时等待状态。</p>
+</li>
+<li><p>终止状态（Terminated）：当线程执行完其任务代码或者由于异常等原因提前结束时，它进入终止状态。处于终止状态的线程已经完成了它的生命周期，无法再次被启动。</p>
+</li>
+</ol>
+<h3 id="基本方法"><a href="#基本方法" class="headerlink" title="基本方法"></a>基本方法</h3><ol>
+<li><code>start()</code>：启动线程，使线程进入就绪状态，等待系统调度执行。</li>
+<li><code>run()</code>：线程的执行体，包含了线程要执行的任务代码。需要自行实现该方法，通常通过继承 Thread 类或实现 Runnable 接口来重写该方法。</li>
+<li><code>sleep(long millis)</code>：让当前线程睡眠指定的时间，单位为毫秒。线程在睡眠期间不会释放锁，用于模拟线程的等待或延迟执行。</li>
+<li><code>yield()</code>：提示线程调度器当前线程愿意放弃当前 CPU 时间片，让出 CPU 资源，使其他具有相同优先级的线程有机会执行。但并不保证一定会让出 CPU 时间片，取决于线程调度器的具体实现。</li>
+<li><code>join()</code>：等待该线程执行完成。调用该方法的线程将会被阻塞，直到目标线程执行完成或者指定的超时时间到达。</li>
+<li><code>interrupt()</code>：中断线程，给目标线程发送一个中断信号，使其中断阻塞状态或者等待状态。通常通过检查中断标志来处理中断。</li>
+<li><code>isInterrupted()</code>：检查线程的中断状态，返回一个布尔值，表示线程是否被中断。</li>
+<li><code>interrupted()</code>：静态方法，检查当前线程的中断状态，并清除中断标志。通常用于线程自身的中断状态查询。</li>
+<li><code>getState()</code>：获取线程的状态，返回一个 Thread.State 枚举值，表示线程当前的状态。</li>
+<li><code>setName(String name)</code> 和 <code>getName()</code>：设置和获取线程的名称，用于标识和区分不同的线程。</li>
+<li><code>isAlive()</code>：检查线程是否还活跃，即线程是否处于就绪、运行或阻塞状态。</li>
+<li><code>wait()</code> ：用于使当前线程进入等待状态，并释放对象的锁。调用 <code>wait()</code> 方法的线程会一直等待，直到其他线程调用该对象的 <code>notify()</code> 或 <code>notifyAll()</code> 方法来唤醒它，或者等待时间到达。<ul>
+<li><code>wait()</code>：线程无限期等待，直到被唤醒或者中断。</li>
+<li><code>wait(long timeout)</code>：线程等待指定的时间，直到被唤醒、中断或者等待时间到达。</li>
+<li><code>wait(long timeout, int nanos)</code>：线程等待指定的时间加上纳秒数，直到被唤醒、中断或者等待时间到达。</li>
+</ul>
+</li>
+<li><code>notify()</code>：用于唤醒一个正在等待的线程。调用 <code>notify()</code>方法会通知等待该对象锁的线程中的一个线程可以继续执行。被唤醒的线程会重新竞争对象的锁。如果有多个线程等待同一个对象的锁，调用 <code>notify()</code><br>方法只会唤醒其中一个线程，具体唤醒哪一个线程是不确定的，取决于线程调度器的实现。</li>
+<li><code>notifyAll()</code>：用于唤醒所有正在等待的线程。调用 <code>notifyAll()</code> 方法会通知所有等待该对象锁的线程，告诉它们可以继续执行了。被唤醒的线程会重新竞争对象的锁。</li>
+</ol>
+<p>注意事项：</p>
+<ul>
+<li><code>wait()</code>、<code>notify()</code> 和 <code>notifyAll()</code> 方法必须在同步代码块或者同步方法中调用，即必须先获得对象的锁才能调用这些方法。</li>
+<li>在调用 <code>wait()</code>、<code>notify()</code> 和 <code>notifyAll()</code> 方法时，线程必须拥有对象的监视器锁（也就是对象的锁）。</li>
+<li>通常与 <code>wait()</code> 方法一起使用的是一个循环，用于检查条件是否满足，防止虚假唤醒。</li>
+</ul>
+<h3 id="创建线程"><a href="#创建线程" class="headerlink" title="创建线程"></a>创建线程</h3><ol>
+<li>继承Thread类重写run()方法</li>
+<li>实现Runnable接口重写run()方法，最后用Thread类包装</li>
+<li>实现Callable接口重写call()方法，使用FutureTask类包装，最后用Thread类包装FutureTask</li>
+<li>通过Executors线程池工具类创建线程</li>
+</ol>
+<h3 id="线程通信"><a href="#线程通信" class="headerlink" title="线程通信"></a>线程通信</h3><ol>
+<li>synchronized和volatile关键字：volatile变量可以保证可见性；</li>
+<li>同步&#x2F;等待机制：通过wait()、notify()实现线程阻塞和唤醒；</li>
+<li>Thread类join()：控制线程执行顺序</li>
+<li>管道流：<code>new PipedInputStream().connect(new PipedOutputStream())</code></li>
+</ol>
+<h2 id="线程安全"><a href="#线程安全" class="headerlink" title="线程安全"></a>线程安全</h2><p>要保证并发访问的安全性，可以从以下角度出发：</p>
+<ol>
+<li>访问状态变量时使用同步，即避免多个线程在同一时刻访问相同数据：线程同步</li>
+<li>确保被访问的对象是线程安全的：可见性、共享变量只读&#x2F;不可变、线程安全容器</li>
+<li>不在线程之间共享任何变量：变量线程独享</li>
+</ol>
+<h2 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h2><p>java中，锁是一种同步机制，用于线程同步和并发控制，从而保护对共享资源的访问。</p>
+<h3 id="类型"><a href="#类型" class="headerlink" title="类型"></a>类型</h3><table>
+<thead>
+<tr>
+<th>序号</th>
+<th>锁名称</th>
+<th>应用</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>乐观锁</td>
+<td>CAS</td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td>悲观锁</td>
+<td>synchronized、ReentrantLock、vector、hashtable</td>
+<td></td>
+</tr>
+<tr>
+<td>3</td>
+<td>自旋锁</td>
+<td>CAS</td>
+<td>适用于锁被占用时间短、线程数量少的情况</td>
+</tr>
+<tr>
+<td>4</td>
+<td>自适应自旋锁</td>
+<td>CAS</td>
+<td>减少自旋次数过多带来的性能损失</td>
+</tr>
+<tr>
+<td>5</td>
+<td>可重入锁</td>
+<td>synchronized、ReentrantLock、Lock</td>
+<td>递归函数内部再次调用自身</td>
+</tr>
+<tr>
+<td>6</td>
+<td>递归锁</td>
+<td>synchronized、ReentrantLock、Lock</td>
+<td>可重入锁</td>
+</tr>
+<tr>
+<td>7</td>
+<td>读写锁</td>
+<td>ReentrantReadWriteLock、CopyOnWriteArrayList、CopyOnWriteArraySet</td>
+<td>读操作频繁、写操作较少的场景</td>
+</tr>
+<tr>
+<td>8</td>
+<td>公平锁</td>
+<td>ReentrantLock(true)</td>
+<td>保证线程获取锁的公平性</td>
+</tr>
+<tr>
+<td>9</td>
+<td>非公平锁</td>
+<td>synchronized、ReentrantLock(false)</td>
+<td>允许线程插队，可能导致线程饥饿</td>
+</tr>
+<tr>
+<td>10</td>
+<td>共享锁</td>
+<td>ReentrantReadWriteLock的读锁</td>
+<td>读多写少的场景</td>
+</tr>
+<tr>
+<td>11</td>
+<td>独占锁</td>
+<td>synchronized、vector、hashtable、ReentrantReadWriteLock的写锁</td>
+<td>写操作频繁的场景</td>
+</tr>
+<tr>
+<td>12</td>
+<td>互斥锁</td>
+<td></td>
+<td>保护临界区，避免竞态条件和数据不一致等并发问题</td>
+</tr>
+<tr>
+<td>13</td>
+<td>重量级锁</td>
+<td>synchronized</td>
+<td>通过操作系统的互斥量实现的锁，效率较低</td>
+</tr>
+<tr>
+<td>14</td>
+<td>轻量级锁</td>
+<td></td>
+<td>通过CAS操作等底层机制实现的锁，效率较高</td>
+</tr>
+<tr>
+<td>15</td>
+<td>偏向锁</td>
+<td></td>
+<td>单线程访问场景的优化手段</td>
+</tr>
+<tr>
+<td>16</td>
+<td>分段锁</td>
+<td>ConcurrentHashMap</td>
+<td>并发哈希表等数据结构的实现</td>
+</tr>
+<tr>
+<td>17</td>
+<td>同步锁</td>
+<td>synchronized</td>
+<td>保护临界区、避免竞态条件等并发问题</td>
+</tr>
+<tr>
+<td>18</td>
+<td>锁粗化</td>
+<td></td>
+<td>将多个连续的同步块合并为一个更大的同步块，减少锁的获取和释放次数</td>
+</tr>
+<tr>
+<td>19</td>
+<td>锁消除</td>
+<td></td>
+<td>在 JIT 编译时去除不必要的同步操作，减少锁的使用</td>
+</tr>
+</tbody></table>
+<h3 id="常见锁"><a href="#常见锁" class="headerlink" title="常见锁"></a>常见锁</h3><h4 id="内置锁（Intrinsic-Lock）"><a href="#内置锁（Intrinsic-Lock）" class="headerlink" title="内置锁（Intrinsic Lock）"></a>内置锁（Intrinsic Lock）</h4><ul>
+<li><strong>概念</strong>：<ul>
+<li>内置锁是 Java 中最基本的锁机制，也称为对象监视器锁或 <code>synchronized</code> 锁。</li>
+<li>通过 <code>synchronized</code> 关键字或者 <code>Object</code> 类的 <code>wait()</code> 和 <code>notify()</code> 方法实现，用于对代码块或方法进行同步控制。</li>
+</ul>
+</li>
+<li><strong>原理</strong>：<ul>
+<li>每个对象都有一个关联的监视器锁，当一个线程进入同步代码块或方法时，它会尝试获取对象的监视器锁。</li>
+<li>如果对象的监视器锁没有被其他线程持有，则当前线程获取到锁，可以执行同步代码；否则线程会被阻塞，直到获取到锁为止。</li>
+</ul>
+</li>
+<li><strong>底层实现</strong>：<ul>
+<li>内置锁的底层实现依赖于 Java 虚拟机的内置机制，通常是基于操作系统的原子操作指令实现锁的获取和释放。</li>
+</ul>
+</li>
+</ul>
+<h4 id="ReentrantLock"><a href="#ReentrantLock" class="headerlink" title="ReentrantLock"></a>ReentrantLock</h4><ul>
+<li><strong>概念</strong>：<ul>
+<li>ReentrantLock 是可重入锁的一种实现，位于 <code>java.util.concurrent.locks</code> 包中。</li>
+<li>它提供了与 <code>synchronized</code> 类似的功能，但更加灵活，可以实现公平性、可中断性等特性。</li>
+</ul>
+</li>
+<li><strong>原理</strong>：<ul>
+<li>ReentrantLock 是基于 <code>AbstractQueuedSynchronizer (AQS)</code> 实现的，使用了 CAS 操作来保证多个线程对锁的并发访问。</li>
+<li>每个 ReentrantLock 实例都持有一个 AQS 的实例，通过 acquire 和 release 方法来获取和释放锁。</li>
+</ul>
+</li>
+<li><strong>底层实现</strong>：<ul>
+<li>ReentrantLock 的底层实现使用了类似于 CAS 操作的 compareAndSetState 方法来管理锁的状态和等待队列。</li>
+</ul>
+</li>
+</ul>
+<h4 id="ReadWriteLock"><a href="#ReadWriteLock" class="headerlink" title="ReadWriteLock"></a>ReadWriteLock</h4><ul>
+<li><strong>概念</strong>：<ul>
+<li>ReadWriteLock 是读写锁，位于 <code>java.util.concurrent.locks</code> 包中。</li>
+<li>允许多个线程同时读取共享资源，但只允许一个线程写入共享资源，以提高读操作的并发性能。</li>
+</ul>
+</li>
+<li><strong>原理</strong>：<ul>
+<li>ReadWriteLock 包含两个锁，一个读锁和一个写锁。当没有线程持有写锁时，多个线程可以同时持有读锁；当有线程持有写锁时，其他线程无法获取读锁或写锁。</li>
+</ul>
+</li>
+<li><strong>底层实现</strong>：<ul>
+<li>ReadWriteLock 的底层实现通常是 ReentrantReadWriteLock，它使用了类似于 ReentrantLock 的方式来管理读锁和写锁的状态。</li>
+</ul>
+</li>
+</ul>
+<h4 id="StampedLock"><a href="#StampedLock" class="headerlink" title="StampedLock"></a>StampedLock</h4><ul>
+<li><strong>概念</strong>：<ul>
+<li>StampedLock 是 Java 8 新增的锁机制，位于 <code>java.util.concurrent.locks</code> 包中。</li>
+<li>提供了乐观读、悲观读和写入的功能，可以根据不同的情况选择最适合的锁定方式。</li>
+</ul>
+</li>
+<li><strong>原理</strong>：<ul>
+<li>StampedLock 提供了乐观读锁和悲观读锁，乐观读锁的获取不会阻塞其他线程的写入操作，但在使用乐观读锁时需要使用 validate 方法来验证数据是否被修改。</li>
+<li>悲观读锁和写锁是独占锁，写锁会阻塞其他读锁和写锁的获取。</li>
+</ul>
+</li>
+<li><strong>底层实现</strong>：<ul>
+<li>StampedLock 的底层实现与 ReentrantLock 类似，也是基于 <code>AbstractQueuedSynchronizer (AQS)</code> 实现的，但它使用了 stamped 概念来标记锁的状态，通过 stamped<br>的值来判断锁的状态以及是否需要重新尝试获取锁。</li>
+</ul>
+</li>
+</ul>
+<h4 id="ReentrantReadWriteLock"><a href="#ReentrantReadWriteLock" class="headerlink" title="ReentrantReadWriteLock"></a>ReentrantReadWriteLock</h4><ul>
+<li><strong>概念</strong>：<ul>
+<li>ReentrantReadWriteLock 是 ReadWriteLock 接口的一种实现，支持可重入的读写锁，允许同一个线程多次获取读锁或写锁。</li>
+</ul>
+</li>
+<li><strong>原理</strong>：<ul>
+<li>ReentrantReadWriteLock 内部维护了读锁和写锁的数量，允许同一个线程在持有读锁或写锁的情况下再次获取相同类型的锁。</li>
+</ul>
+</li>
+<li><strong>底层实现</strong>：<ul>
+<li>ReentrantReadWriteLock 的底层实现与 ReentrantLock 类似，也是基于 <code>AbstractQueuedSynchronizer (AQS)</code>实现的，但它使用了两个计数器来分别记录读锁和写锁的数量。</li>
+</ul>
+</li>
+</ul>
+<h4 id="Semaphore"><a href="#Semaphore" class="headerlink" title="Semaphore"></a>Semaphore</h4><ul>
+<li><strong>概念</strong>：<ul>
+<li>Semaphore（信号量）用于控制同时访问某个资源的线程数量。</li>
+<li>它可以控制在同一时刻有多少个线程可以访问共享资源，常用于限流和资源池管理等场景。</li>
+</ul>
+</li>
+<li><strong>原理</strong>：<ul>
+<li>Semaphore 内部维护了一个计数器和一个等待队列。</li>
+<li>当线程尝试获取信号量时，如果计数器大于 0，则线程获取到信号量，计数器减一；如果计数器等于 0，则线程会被阻塞，直到有其他线程释放信号量。</li>
+</ul>
+</li>
+<li><strong>底层实现</strong>：<ul>
+<li>Semaphore 的底层实现通常使用了类似于 ReentrantLock 的方式来保护计数器和等待队列，以及实现线程的阻塞和唤醒。</li>
+</ul>
+</li>
+</ul>
+<h4 id="CountDownLatch"><a href="#CountDownLatch" class="headerlink" title="CountDownLatch"></a>CountDownLatch</h4><ul>
+<li><strong>概念</strong>：<ul>
+<li>CountDownLatch（倒计时门闩）用于线程间的同步等待。</li>
+<li>一个或多个线程等待其他线程执行完毕后再执行，可以通过 <code>countDown()</code> 和 <code>await()</code> 方法实现。</li>
+</ul>
+</li>
+<li><strong>原理</strong>：<ul>
+<li>CountDownLatch 内部维护了一个计数器，当计数器值为 0 时，所有等待的线程都会被唤醒。</li>
+<li>线程执行 <code>countDown()</code> 方法时，计数器减一；线程执行 <code>await()</code> 方法时，如果计数器值不为 0，则线程会被阻塞，直到计数器值为 0。</li>
+</ul>
+</li>
+<li><strong>底层实现</strong>：<ul>
+<li>CountDownLatch 的底层实现通常使用了类似于 ReentrantLock 和 Condition 的方式来保护计数器和等待队列，以及实现线程的阻塞和唤醒。</li>
+</ul>
+</li>
+</ul>
+<h4 id="CyclicBarrier"><a href="#CyclicBarrier" class="headerlink" title="CyclicBarrier"></a>CyclicBarrier</h4><ul>
+<li><strong>概念</strong>：<ul>
+<li>CyclicBarrier（循环栅栏）用于线程间的同步等待，允许一组线程互相等待，直到到达某个公共屏障点后再继续执行。</li>
+<li>它可以用于多个线程之间相互等待，直到所有线程都到达某个点后再继续执行，常用于分布式计算和并行计算场景。</li>
+</ul>
+</li>
+<li><strong>原理</strong>：<ul>
+<li>CyclicBarrier 内部维护了一个计数器和一个屏障动作。</li>
+<li>当线程调用 <code>await()</code> 方法时，计数器减一，然后线程被阻塞，直到计数器值为 0。</li>
+<li>当计数器值为 0 时，所有等待的线程都会被释放，并且执行屏障动作。</li>
+</ul>
+</li>
+<li><strong>底层实现</strong>：<ul>
+<li>CyclicBarrier 的底层实现通常使用了类似于 ReentrantLock 和 Condition 的方式来保护计数器和等待队列，以及实现线程的阻塞和唤醒。</li>
+</ul>
+</li>
+</ul>
+<h4 id="LockSupport"><a href="#LockSupport" class="headerlink" title="LockSupport"></a>LockSupport</h4><ul>
+<li><strong>概念</strong>：<ul>
+<li>LockSupport 是用于线程的阻塞和唤醒操作的工具类。</li>
+<li>它可以让线程在任意位置阻塞，并且可以在任意位置唤醒被阻塞的线程。</li>
+</ul>
+</li>
+<li><strong>原理</strong>：<ul>
+<li>LockSupport 主要提供了 <code>park()</code> 和 <code>unpark()</code> 两个静态方法来实现线程的阻塞和唤醒。</li>
+<li><code>park()</code> 方法用于阻塞当前线程，而 <code>unpark()</code> 方法用于唤醒指定线程。</li>
+</ul>
+</li>
+<li><strong>底层实现</strong>：<ul>
+<li>LockSupport 的底层实现通常依赖于操作系统的原子操作指令，比如 Linux 下的 futex（Fast Userspace Mutex）。</li>
+</ul>
+</li>
+</ul>
+<h4 id="Phaser"><a href="#Phaser" class="headerlink" title="Phaser"></a>Phaser</h4><ul>
+<li><strong>概念</strong>：<ul>
+<li>Phaser（阶段器）用于协调多个线程的执行阶段。</li>
+<li>它允许一组线程互相等待，直到到达某个阶段后再继续执行，可以动态地注册和注销参与者。</li>
+</ul>
+</li>
+<li><strong>原理</strong>：<ul>
+<li>Phaser 内部维护了一个阶段数和一个参与者计数器。</li>
+<li>当所有参与者都到达某个阶段时，Phaser 会进入下一个阶段，并且唤醒所有等待的线程。</li>
+</ul>
+</li>
+<li><strong>底层实现</strong>：<ul>
+<li>Phaser 的底层实现通常使用了类似于 ReentrantLock 和 Condition 的方式来保护阶段数和参与者计数器，以及实现线程的阻塞和唤醒。</li>
+</ul>
+</li>
+</ul>
+<h3 id="synchronized锁"><a href="#synchronized锁" class="headerlink" title="synchronized锁"></a>synchronized锁</h3><p>synchronized是Java中用于实现同步的关键字，它可以应用于方法或代码块中。使用synchronized关键字可以确保多个线程在访问共享资源时的安全性，避免出现竞态条件（Race Condition）等问题。</p>
+<p><strong>synchronized是互斥锁，在同一时刻只会有一个线程拿到锁对象</strong></p>
+<h4 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h4><h5 id="修饰代码块"><a href="#修饰代码块" class="headerlink" title="修饰代码块"></a>修饰代码块</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">synchronized (lock对象) &#123;</span><br><span class="line">    // 同步代码块</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="修饰普通方法"><a href="#修饰普通方法" class="headerlink" title="修饰普通方法"></a>修饰普通方法</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">synchronized public void getValue() &#123;...&#125;</span><br><span class="line"></span><br><span class="line">// 相当于:</span><br><span class="line">class X &#123;</span><br><span class="line">    synchronized(this) public void getValue() &#123;...&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="修饰静态方法"><a href="#修饰静态方法" class="headerlink" title="修饰静态方法"></a>修饰静态方法</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">synchronized public static void getValue() &#123;...&#125;</span><br><span class="line"></span><br><span class="line">// 相当于:</span><br><span class="line">class X &#123;</span><br><span class="line">    synchronized(X.class) public void getValue() &#123;...&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>synchronized是可重入锁，拿到锁的线程可以再次拿到锁</strong></p>
+<h4 id="可重入锁实现"><a href="#可重入锁实现" class="headerlink" title="可重入锁实现"></a>可重入锁实现</h4><ul>
+<li>为每个锁关联一个获取该锁的次数的计数器 count，和一个所有者线程；</li>
+<li>count &#x3D; 0 时，说明没有线程持有该锁；</li>
+<li>当一个线程获取一个未被持有的锁时，JVM 记下锁的持有者，并 count &#x3D; 1；</li>
+<li>当这个线程再次获取锁时，count++；</li>
+<li>当线程退出同步代码块时，count–；</li>
+<li>当 count 再次减为 0 时，锁被释放。</li>
+</ul>
+<h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><p><code>synchronized</code>是java中的一种内置锁，也称为对象监视器锁（Monitor Lock）或互斥锁（Mutex<br>Lock）。在java中，每个对象都有一个与之关联的监视器，用于控制对对象的并发访问。当一个线程进入了一个<code>synchronized</code><br>方法或代码块时，它会尝试获取对象的监视器锁，如果获取成功，则可以执行同步代码；如果获取失败，则线程会被阻塞，直到获取到锁为止。</p>
+<h5 id="对象头"><a href="#对象头" class="headerlink" title="对象头"></a>对象头</h5><p>Java 的对象头主要包含几部分：</p>
+<table>
+<thead>
+<tr>
+<th>长度</th>
+<th>内容</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>32&#x2F;64 bit</td>
+<td>Mark Word</td>
+<td>存储对象的hashCode和锁信息</td>
+</tr>
+<tr>
+<td>32&#x2F;64 bit</td>
+<td>Class Metadata Address</td>
+<td>存储对象类型数据的指针</td>
+</tr>
+<tr>
+<td>32 bit</td>
+<td>Array length</td>
+<td>数组的长度（数组对象才有）</td>
+</tr>
+</tbody></table>
+<h5 id="Monitor-Record"><a href="#Monitor-Record" class="headerlink" title="Monitor Record"></a>Monitor Record</h5><p>Monitor Record是线程私有的数据结构，每一个线程都有一个可用monitor record列表，同时还有一个全局的可用列表。每一个被锁住的对象都会和一个monitor record关联（对象头的 MarkWord中的<br>LockWord 指向 monitor record 的起始地址），同时 monitor record 中有一个 Owner 字段存放拥有该锁的线程的唯一标识，表示该锁被这个线程占用。</p>
+<p>如下为 Monitor Record 的内部结构：</p>
+<table>
+<thead>
+<tr>
+<th>monitor record 元素</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Owner</strong></td>
+<td>初始时为 null,表示当前没有任何线程拥有该 monitor，当线程成功拥有该锁后保存线程唯一标识，当锁被释放时又设置为 null</td>
+</tr>
+<tr>
+<td>EntryQ</td>
+<td>阻塞所有试图锁住 monitor record 失败的线程</td>
+</tr>
+<tr>
+<td>RcThis</td>
+<td>表示 blocked 或 waiting 在该 monitor record 上的所有线程的个数</td>
+</tr>
+<tr>
+<td><strong>Nest</strong></td>
+<td>实现重入锁的计数</td>
+</tr>
+<tr>
+<td>HashCode</td>
+<td>保存从对象头拷贝过来的 HashCode 值</td>
+</tr>
+<tr>
+<td>Candidate</td>
+<td>0 表示没有需要唤醒的线程，1 表示要唤醒一个继任线程来竞争锁</td>
+</tr>
+</tbody></table>
+<h5 id="底层原理"><a href="#底层原理" class="headerlink" title="底层原理"></a>底层原理</h5><ol>
+<li>synchronized 关键字的底层原理是基于对象头中的 Mark Word 和线程的监视器（Monitor）实现的。每个对象都有一个与之关联的监视器，用于控制对对象的并发访问。</li>
+<li>当线程进入一个 synchronized 方法或代码块时，会尝试获取对象的监视器锁。如果对象的监视器锁没有被其他线程持有，则当前线程获取到锁，可以执行同步代码；如果锁被其他线程持有，则当前线程将被阻塞，直到获取到锁为止。</li>
+<li>当线程执行完同步代码后，会释放对象的监视器锁，唤醒其他等待获取该锁的线程。</li>
+<li>在方法上使用 synchronized 关键字时，锁对象是当前实例对象（即 this），在静态方法上使用 synchronized 关键字时，锁对象是当前类的 Class 对象。</li>
+</ol>
+<h5 id="锁优化"><a href="#锁优化" class="headerlink" title="锁优化"></a>锁优化</h5><p><code>synchronized</code> 锁在 Java 中是最常用的一种同步机制，但它在一些场景下可能存在性能问题。为了提高性能，Java 虚拟机和编译器在多个版本中对 <code>synchronized</code> 锁进行了优化，主要包括以下几个方面：</p>
+<ol>
+<li><p><strong>自适应自旋（Adaptive Spinning）</strong>：</p>
+<ul>
+<li>在 JDK 6 中引入了自适应自旋技术，通过统计当前锁的竞争情况来动态调整自旋次数。</li>
+<li>当一个线程尝试获取一个被其他线程持有的锁时，如果锁的持有时间很短，Java 虚拟机可能会让线程进行自旋等待，避免线程进入阻塞状态，从而降低线程切换的开销。</li>
+</ul>
+</li>
+<li><p><strong>偏向锁（Biased Locking）</strong>：</p>
+<ul>
+<li>JDK 6 引入了偏向锁技术，用于在无竞争的情况下提高锁的性能。</li>
+<li>当一个线程获取锁时，如果该锁没有被其他线程持有，Java 虚拟机会将锁的标记设置为偏向该线程，后续获取锁的操作会快速执行，不需要进行同步操作。</li>
+<li>如果其他线程尝试获取同一个锁时，偏向锁会自动升级为轻量级锁或者重量级锁。</li>
+</ul>
+</li>
+<li><p><strong>轻量级锁（Lightweight Locking）</strong>：</p>
+<ul>
+<li>在 JDK 6 中，当一个线程尝试获取一个被其他线程持有的锁时，Java 虚拟机会将锁的标记设置为轻量级锁。</li>
+<li>轻量级锁通过 CAS 操作来尝试获取锁，避免了线程阻塞和唤醒的开销，提高了锁的竞争效率。</li>
+<li>如果 CAS 操作失败，表示锁竞争激烈，锁会升级为重量级锁。</li>
+</ul>
+</li>
+<li><p><strong>锁消除（Lock Elimination）</strong>：</p>
+<ul>
+<li>Java 虚拟机会通过逃逸分析来检测代码中是否存在不需要同步的场景，如果不存在共享数据，就可以将 <code>synchronized</code> 锁消除掉，减少同步开销。</li>
+<li>例如，如果一个对象只在单个线程中使用，或者在线程栈上分配的对象，Java 虚拟机会认为这些对象不会被其他线程访问，可以消除相应的锁。</li>
+</ul>
+</li>
+</ol>
+<p>通过这些优化技术，<code>synchronized</code> 锁的性能得到了大幅提升，同时保持了线程安全性。在实际开发中，建议使用 <code>synchronized</code> 锁来保证程序的正确性和线程的安全性，避免出现并发问题。</p>
+<h2 id="AQS-和-CAS"><a href="#AQS-和-CAS" class="headerlink" title="AQS 和 CAS"></a>AQS 和 CAS</h2><h3 id="AQS（AbstractQueuedSynchronizer）"><a href="#AQS（AbstractQueuedSynchronizer）" class="headerlink" title="AQS（AbstractQueuedSynchronizer）"></a>AQS（AbstractQueuedSynchronizer）</h3><p>AQS是Java中用来构建锁和其他同步组件的抽象基类，它提供了一种基于队列的锁和同步器框架，可以轻松实现各种同步器，如互斥锁、读写锁、信号量等。AQS使用了一种先进先出（FIFO）的等待队列来管理等待线程，并且提供了基于CAS操作的原子更新机制来保证多线程的安全访问。</p>
+<h3 id="CAS（Compare-And-Swap）"><a href="#CAS（Compare-And-Swap）" class="headerlink" title="CAS（Compare And Swap）"></a>CAS（Compare And Swap）</h3><p>CAS是一种基于原子操作的并发控制机制，常用于实现非阻塞算法和乐观锁。它通过比较内存中的值和期望值是否相等，如果相等，则将内存中的值更新为新值，否则不做任何操作。<br>CAS操作通常包括三个参数：要操作的内存位置（地址）、期望值和新值。如果内存位置的值等于期望值，则用新值更新内存位置的值，否则操作失败。CAS 操作是一种无锁的并发控制机制，因此在高并发场景下具有较好的性能表现。<br>CAS操作由<code>sun.misc.Unsafe</code>提供支持，但并不推荐直接使用<code>Unsafe</code>类，而是通过<code>java.util.concurrent.atomic</code>包中的原子类来间接使用CAS操作，如<code>AtomicInteger</code>。<br>这些原子类封装了CAS操作，提供了更方便、安全的方式来进行原子操作。CAS操作通常结合循环重试来实现非阻塞算法，以处理并发冲突。</p>
+<h3 id="Java中的原子类"><a href="#Java中的原子类" class="headerlink" title="Java中的原子类"></a>Java中的原子类</h3><p>Java中的原子类是一组提供了原子操作的类，位于<code>java.util.concurrent.atomic</code><br>包中。这些原子类能够在多线程环境下安全地执行读取、写入和更新操作，而不需要额外的同步控制（如synchronized关键字）。原子类主要通过CAS（Compare-And-Swap）操作来实现线程安全的并发控制。</p>
+<ol>
+<li><strong>AtomicBoolean</strong>：提供对boolean类型的原子操作。</li>
+<li><strong>AtomicInteger</strong>：提供对int类型的原子操作。</li>
+<li><strong>AtomicLong</strong>：提供对long类型的原子操作。</li>
+<li><strong>AtomicReference</strong>：提供对引用类型的原子操作。</li>
+<li><strong>AtomicIntegerArray</strong>：提供对int数组类型的原子操作。</li>
+<li><strong>AtomicLongArray</strong>：提供对long数组类型的原子操作。</li>
+<li><strong>AtomicReferenceArray</strong>：提供对引用类型数组的原子操作。</li>
+<li><strong>AtomicIntegerFieldUpdater</strong>：用于更新指定类的int类型字段的原子操作。</li>
+<li><strong>AtomicLongFieldUpdater</strong>：用于更新指定类的long类型字段的原子操作。</li>
+<li><strong>AtomicReferenceFieldUpdater</strong>：用于更新指定类的引用类型字段的原子操作。</li>
+<li><strong>AtomicMarkableReference</strong>：提供对带有标记位的引用类型的原子操作，可以同时更新引用和标记位，主要用于标记某个对象的状态。</li>
+<li><strong>AtomicStampedReference</strong>：提供对带有版本号的引用类型的原子操作，可以同时更新引用和版本号，主要用于解决ABA问题。</li>
+<li><strong>DoubleAccumulator</strong>：提供对double类型的原子累加操作，支持对多个线程的并发累加操作。</li>
+<li><strong>DoubleAdder</strong>：提供对double类型的原子加法操作，支持对多个线程的并发加法操作。</li>
+<li><strong>LongAccumulator</strong>：提供对long类型的原子累加操作，支持对多个线程的并发累加操作。</li>
+<li><strong>LongAdder</strong>：提供对long类型的原子加法操作，支持对多个线程的并发加法操作。</li>
+</ol>
+<h2 id="活跃性危险-线程安全问题"><a href="#活跃性危险-线程安全问题" class="headerlink" title="活跃性危险&#x2F;线程安全问题"></a>活跃性危险&#x2F;线程安全问题</h2><h3 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h3><h3 id="活锁"><a href="#活锁" class="headerlink" title="活锁"></a>活锁</h3><h3 id="线程饥饿"><a href="#线程饥饿" class="headerlink" title="线程饥饿"></a>线程饥饿</h3><h2 id="并发容器"><a href="#并发容器" class="headerlink" title="并发容器"></a>并发容器</h2><p>Java中的并发容器是为了在多线程环境下提供线程安全的数据结构而设计的。</p>
+<ol>
+<li><p><strong>ConcurrentHashMap</strong>：线程安全的哈希表实现，用于存储键值对。它支持高并发的读写操作，并提供了比Hashtable更好的性能。</p>
+</li>
+<li><p><strong>ConcurrentSkipListMap</strong>：基于跳表（SkipList）的并发有序映射表实现，支持并发地插入、删除和访问操作，并提供了比TreeMap更好的并发性能。</p>
+</li>
+<li><p><strong>ConcurrentSkipListSet</strong>：基于跳表（SkipList）的并发有序集合实现，支持并发地插入、删除和访问操作，并提供了比TreeSet更好的并发性能。</p>
+</li>
+<li><p><strong>ConcurrentLinkedQueue</strong>：线程安全的非阻塞队列实现，基于链表结构，支持高并发的生产者-消费者模式。</p>
+</li>
+<li><p><strong>ConcurrentLinkedDeque</strong>：线程安全的非阻塞双端队列实现，基于链表结构，支持高并发的双端操作。</p>
+</li>
+<li><p><strong>CopyOnWriteArrayList</strong>：线程安全的动态数组实现，通过在写操作时复制整个数组来实现线程安全，适用于读多写少的场景。</p>
+</li>
+<li><p><strong>CopyOnWriteArraySet</strong>：线程安全的集合实现，基于CopyOnWriteArrayList实现，适用于读多写少的场景。</p>
+</li>
+<li><p><strong>LinkedBlockingQueue</strong>：线程安全的阻塞队列实现，基于链表结构，支持生产者-消费者模式，并提供了阻塞的插入和移除操作。</p>
+</li>
+<li><p><strong>ArrayBlockingQueue</strong>：线程安全的阻塞队列实现，基于数组结构，支持生产者-消费者模式，并提供了固定容量的阻塞队列。</p>
+</li>
+<li><p><strong>PriorityBlockingQueue</strong>：线程安全的优先级队列实现，基于堆结构，支持按优先级顺序插入和移除元素。</p>
+</li>
+<li><p><strong>ConcurrentHashMap.KeySetView</strong>：ConcurrentHashMap的KeySet视图，是一个并发安全的Set，可以直接对其进行操作而无需考虑并发访问的问题。</p>
+</li>
+<li><p><strong>ConcurrentHashMap.ValuesView</strong>：ConcurrentHashMap的Values视图，是一个并发安全的Collection，可以直接对其进行操作而无需考虑并发访问的问题。</p>
+</li>
+<li><p><strong>ConcurrentHashMap.EntrySetView</strong><br>：ConcurrentHashMap的EntrySet视图，是一个并发安全的Set，其中的元素是Map.Entry对象，可以直接对其进行操作而无需考虑并发访问的问题。</p>
+</li>
+<li><p><strong>ConcurrentLinkedHashMap</strong>：Guava库提供的并发安全的哈希表实现，是ConcurrentHashMap的替代品，支持高并发的读写操作，同时提供了LRU缓存淘汰策略。</p>
+</li>
+<li><p><strong>LinkedBlockingDeque</strong>：线程安全的阻塞双端队列实现，基于链表结构，支持生产者-消费者模式，并提供了阻塞的双端操作。</p>
+</li>
+<li><p><strong>ConcurrentLinkedTransferQueue</strong>：JDK 7引入的一种特殊的队列实现，结合了无界队列和阻塞队列的特性，提供了高并发的插入和移除操作。</p>
+</li>
+<li><p><strong>ConcurrentLinkedBlockingQueue</strong>：线程安全的基于链表结构的阻塞队列实现，是ConcurrentLinkedQueue和LinkedBlockingQueue的结合体，提供了高并发的插入和移除操作。</p>
+</li>
+<li><p><strong>ConcurrentSkipListMap</strong>：基于跳表（SkipList）的并发有序映射表实现，支持并发地插入、删除和访问操作，并提供了比TreeMap更好的并发性能。</p>
+</li>
+<li><p><strong>ConcurrentSkipListSet</strong>：基于跳表（SkipList）的并发有序集合实现，支持并发地插入、删除和访问操作，并提供了比TreeSet更好的并发性能。</p>
+</li>
+</ol>
+<h3 id="HashMap-HashTable-TreeMap-ConcurrentHashMap"><a href="#HashMap-HashTable-TreeMap-ConcurrentHashMap" class="headerlink" title="HashMap_HashTable_TreeMap_ConcurrentHashMap"></a>HashMap_HashTable_TreeMap_ConcurrentHashMap</h3><h4 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h4><ol>
+<li><p><strong>HashMap</strong>：</p>
+<ul>
+<li>实现方式：基于哈希表的数据结构，使用数组存储键值对，通过哈希算法计算键的索引位置。</li>
+<li>线程安全性：非线程安全，不支持并发访问。在多线程环境下使用时，需要通过外部同步机制来保证线程安全。</li>
+<li>性能：在无竞争的情况下，性能很好。查找、插入和删除操作的平均时间复杂度为O(1)。</li>
+</ul>
+</li>
+<li><p><strong>HashTable</strong>：</p>
+<ul>
+<li>实现方式：类似于HashMap，也是基于哈希表的数据结构，但是所有的方法都是同步的。</li>
+<li>线程安全性：线程安全，所有的方法都是同步的，支持并发访问。但是由于所有方法都加了synchronized关键字，导致并发性能较差。</li>
+<li>性能：相对较低，因为所有方法都加了同步锁，会导致多线程并发访问时的性能下降。</li>
+</ul>
+</li>
+<li><p><strong>TreeMap</strong>：</p>
+<ul>
+<li>实现方式：基于红黑树的数据结构，通过键的自然顺序或者自定义比较器来维护键值对的有序性。</li>
+<li>线程安全性：非线程安全，不支持并发访问。在多线程环境下使用时，需要通过外部同步机制来保证线程安全。</li>
+<li>性能：在大多数操作上性能较HashMap略差，但是因为维护了有序性，适用于需要按顺序遍历键值对的场景。</li>
+</ul>
+</li>
+<li><p><strong>ConcurrentHashMap</strong>：</p>
+<ul>
+<li>实现方式：基于分段锁（Segment）的数据结构，内部由多个哈希桶组成，每个桶都是一个独立的哈希表，相当于将一个大的哈希表分成了多个小的哈希表，每个小的哈希表都有自己的锁。</li>
+<li>线程安全性：线程安全，支持高并发访问。ConcurrentHashMap通过分段锁来实现并发控制，只有操作同一个哈希桶的线程才会被阻塞，其他线程可以并发地访问不同的桶。</li>
+<li>性能：在高并发环境下性能优于HashTable，相对于HashMap在并发情况下有更好的性能。在Java 8及以后的版本中，进一步优化了性能。</li>
+</ul>
+</li>
+</ol>
+<h4 id="HashMap源码分析"><a href="#HashMap源码分析" class="headerlink" title="HashMap源码分析"></a>HashMap源码分析</h4><h2 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h2><h3 id="线程池参数"><a href="#线程池参数" class="headerlink" title="线程池参数"></a>线程池参数</h3><ol>
+<li><p><strong>核心线程数（corePoolSize）</strong>：</p>
+<ul>
+<li>线程池中保持的最小线程数。</li>
+<li>当有新任务到来时，线程池会创建线程来处理任务，直到达到核心线程数。</li>
+</ul>
+</li>
+<li><p><strong>最大线程数（maximumPoolSize）</strong>：</p>
+<ul>
+<li>线程池中允许的最大线程数。</li>
+<li>当队列满时且线程数未达到最大线程数时，线程池会创建新线程处理任务。</li>
+</ul>
+</li>
+<li><p><strong>保持活动时间（keepAliveTime）</strong>：</p>
+<ul>
+<li>当线程池中线程数量超过核心线程数时，多余的空闲线程在指定时间内会被销毁。</li>
+</ul>
+</li>
+<li><p><strong>时间单位（unit）</strong>：</p>
+<ul>
+<li>TimeUnit枚举类型，指定时间的单位。</li>
+</ul>
+</li>
+<li><p><strong>任务队列（workQueue）</strong>：</p>
+<ul>
+<li>用于存储等待执行的任务的队列。</li>
+<li>有多种类型的任务队列可供选择，如有界队列、无界队列和优先级队列等。</li>
+</ul>
+</li>
+<li><p><strong>线程工厂（workQueue）</strong>：</p>
+<ul>
+<li>定义创建线程的方式。</li>
+</ul>
+</li>
+<li><p><strong>拒绝策略（RejectedExecutionHandler）</strong>：</p>
+<ul>
+<li>当任务无法被接收时采取的策略。</li>
+<li>常见的策略包括抛出异常、直接丢弃任务、丢弃队列中最老的任务和调用任务执行者的线程来执行任务。</li>
+</ul>
+</li>
+</ol>
+<h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><ol>
+<li><p><strong>线程池初始化</strong>：</p>
+<ul>
+<li>在初始化阶段，根据传入的参数创建一定数量的线程，并将它们添加到线程池中。</li>
+<li>初始时创建的线程数量等于核心线程数。</li>
+</ul>
+</li>
+<li><p><strong>任务执行</strong>：</p>
+<ul>
+<li>当有任务提交给线程池时，线程池会根据当前线程池状态和任务队列状态来决定如何处理任务。</li>
+<li>如果线程池中的线程数小于核心线程数，新任务将会创建一个线程来执行。</li>
+<li>如果线程池中的线程数达到核心线程数，新任务会被放入任务队列中等待执行。</li>
+<li>如果任务队列已满，且线程数未达到最大线程数，则创建新线程执行任务。</li>
+<li>如果线程池中的线程数达到最大线程数，新任务会被拒绝执行。</li>
+</ul>
+</li>
+<li><p><strong>线程池扩容和缩容</strong>：</p>
+<ul>
+<li>当任务队列已满且线程数未达到最大线程数时，线程池会创建新线程执行任务，直到达到最大线程数。</li>
+<li>当线程池中的线程数超过核心线程数且空闲时间超过保持活动时间时，多余的空闲线程会被销毁。</li>
+</ul>
+</li>
+<li><p><strong>任务执行完成</strong>：</p>
+<ul>
+<li>当任务执行完成后，线程池会将线程放回线程池中以便复用，而不是立即销毁。</li>
+</ul>
+</li>
+</ol>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://tech.meituan.com/2018/11/15/java-lock.html">https://tech.meituan.com/2018/11/15/java-lock.html</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/03/28/JVM%E5%9F%BA%E7%A1%80/" rel="prev" title="JVM基础">
+                  <i class="fa fa-angle-left"></i> JVM基础
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/04/15/Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/" rel="next" title="java内存模型">
+                  java内存模型 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">JTRAINBOW</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
